@@ -1,0 +1,100 @@
+/* Fondo general */
+body {
+  margin: 0;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  background: radial-gradient(circle at top left, #0f2027, #203a43, #2c5364);
+  color: #fff;
+}
+
+/* Caja principal con efecto futurista */
+.login-container {
+  background: rgba(255, 255, 255, 0.05);
+  padding: 2.5rem;
+  border-radius: 20px;
+  backdrop-filter: blur(15px);
+  box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+  width: 100%;
+  max-width: 400px;
+  text-align: center;
+  animation: fadeIn 1.2s ease;
+}
+
+/* Título */
+.login-container h1 {
+  background: linear-gradient(45deg, #00f2fe, #4facfe);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Inputs Bootstrap customizados */
+.form-control, .form-select {
+  border: none;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.1) !important;
+  color: #fff !important;
+  transition: 0.3s ease;
+}
+
+.form-control:focus, .form-select:focus {
+  background: rgba(255, 255, 255, 0.2) !important;
+  box-shadow: 0 0 8px #00f2fe;
+}
+
+/* Botón futurista */
+button.btn {
+  border-radius: 12px;
+  background: linear-gradient(90deg, #00f2fe, #4facfe);
+  color: #fff;
+  font-weight: bold;
+  font-size: 1.1rem;
+  transition: transform 0.2s ease, box-shadow 0.3s ease;
+}
+
+button.btn:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 20px rgba(0, 242, 254, 0.4);
+}
+
+/* Enlace extra */
+.extra {
+  font-size: 0.85rem;
+  color: #ccc;
+}
+
+.extra a {
+  color: #00f2fe;
+  text-decoration: none;
+}
+
+.extra a:hover {
+  text-decoration: underline;
+}
+
+/* Animación */
+@keyframes fadeIn {
+  from {opacity: 0; transform: translateY(-20px);}
+  to {opacity: 1; transform: translateY(0);}
+}
+
+/* --- Toggle de roles --- */
+.toggle-btn {
+  border-radius: 12px !important;
+  padding: 10px 20px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255,255,255,0.2);
+  color: #fff !important;
+}
+
+.toggle-btn:hover {
+  background: rgba(255, 255, 255, 0.2);
+  box-shadow: 0 0 8px #00f2fe;
+}
+
+.btn-check:checked + .toggle-btn {
+  background: linear-gradient(90deg, #00f2fe, #4facfe);
+  color: #fff !important;
+  box-shadow: 0 0 12px rgba(0, 242, 254, 0.6);
+}
+
