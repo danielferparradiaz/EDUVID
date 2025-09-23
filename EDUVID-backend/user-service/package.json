@@ -1,15 +1,14 @@
 {
-  "name": "progress",
+  "name": "user-service",
   "version": "1.0.0",
-  "description": "",
-  "main": "progress-service/index.js",
+  "description": "servicio de usuarios",
+  "license": "ISC",
+  "author": "",
+  "type": "commonjs",
+  "main": "index.js",
   "scripts": {
-    "start": "node progress-service/index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
   "dependencies": {
     "cors": "^2.8.5",
     "dotenv": "^17.2.2",
