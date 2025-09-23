@@ -1,28 +1,12 @@
-import path from 'path';
-
-console.log("PWD", process.cwd());
-console.log("ENV_PATH", path.resolve('.env'));
-
 import dotenv from 'dotenv';
-dotenv.config(); // cargar variables de entorno primero
-
 import express from "express";
 import cors from "cors";
 import morgan from "morgan";
 import sequelize from "./config/db.js";
 import progressRoutes from "./routes/routes.js";
 
-process.on('uncaughtException', err => {
-  console.error('Uncaught Exception:', err);
-});
-process.on('unhandledRejection', err => {
-  console.error('Unhandled Rejection:', err);
-});
+dotenv.config(); // cargar variables de entorno primero
 
-// debug variables de entorno
-console.log("DB_USER:", process.env.DB_USER);
-console.log("DB_PASS:", process.env.DB_PASS);
-console.log("DB_NAME:", process.env.DB_NAME);
 
 const app = express();
 
@@ -41,7 +25,7 @@ app.use(cors({
 app.use(express.json());
 app.use("/api", progressRoutes);
 
-const PORT = process.env.PORT || 8080;
+const PORT = process.env.PORT || 8012;
 
 app.listen(PORT, async () => {
   try {
