@@ -1,15 +1,32 @@
-import jwt_decode from "jwt-decode";
+const token = localStorage.getItem("jwt");
+console.log("📌 Token obtenido:", token);
 
-const token = localStorage.getItem("token");
-if (token) {
-  const decoded = jwt_decode(token);
-  const now = Date.now() / 1000;
-  if (decoded.exp < now) {
-    // Token expirado → limpiar y redirigir
-    localStorage.removeItem("token");
-    window.location.href = "../login/login.html";
-  }
-}
+// if (!token) {
+//   console.warn("⚠️ No hay token → redirigiendo");
+//   window.location.href = "../login/login.html";
+// } else {
+//   try {
+//     const decoded = jwt_decode(token);
+//     const now = Math.floor(Date.now() / 1000);
+
+//     console.log("🔑 Decoded:", decoded);
+//     console.log("⏰ Ahora:", now, "| Exp:", decoded.exp);
+
+//     if (decoded.exp < now) {
+//       console.warn("⚠️ Token expirado → redirigiendo");
+//       localStorage.removeItem("jwt");
+//       window.location.href = "../login/login.html";
+//     } else {
+//       console.log("✅ Token válido, sigue en la página");
+//     }
+//   } catch (e) {
+//     console.error("❌ Error al decodificar:", e);
+//     localStorage.removeItem("jwt");
+//     window.location.href = "../login/login.html";
+//   }
+// }
+
+
 
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -50,12 +67,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
     preview.innerHTML = `
       <p><strong>Archivo:</strong> ${file.name}</p>
-      <p><strong>Tamaño:</strong> ${(file.size / (1024*1024)).toFixed(2)} MB</p>
+      <p><strong>Tamaño:</strong> ${(file.size / (1024 * 1024)).toFixed(2)} MB</p>
     `;
   }
 });
 
-// dashboard.js, estadisticas.js, etc.
+// ✅ Navbar activo dinámico
 document.addEventListener("DOMContentLoaded", () => {
   const path = window.location.pathname;
   document.querySelectorAll(".nav-link").forEach(link => {
@@ -66,4 +83,3 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 });
-
