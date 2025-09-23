@@ -1,10 +1,9 @@
-const express = require("express");
-const router = express.Router();
-const userController = require("../controllers/userController");
-const authenticate = require("../middlewares/authMiddleware");
+import { Router } from "express";
+import { validateUserById } from "../controllers/userController.js";
 
-router.post("/register", userController.register); // abierto o protegido, depende de tu diseño
-router.get("/profile", authenticate, userController.getProfile);
-router.get("/", authenticate, userController.listUsers);
+const router = Router();
 
-module.exports = router;
+router.get("/validate-user/:id", validateUserById);
+
+
+export default router;  // 👈 exportación ESM

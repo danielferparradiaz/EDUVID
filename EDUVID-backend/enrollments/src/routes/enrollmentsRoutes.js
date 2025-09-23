@@ -3,7 +3,7 @@ import { enrollUser, getEnrollmentByUserId } from "../controllers/enrollmentsCon
 
 const router = Router();
 
-router.post("/enrollUser",enrollUser);
+router.post("/enrollUser", enrollUser);
 router.get("/getEnrollmentByUserId", getEnrollmentByUserId);
 
 export default router;

@@ -1,16 +1,27 @@
-const users = [];
+import { DataTypes } from "sequelize";
+import sequelize from "../config/db.js";
 
-function createUser(user) {
-  users.push(user);
-  return user;
-}
+const User = sequelize.define("usuarios", {
+  id: {
+    type: DataTypes.INTEGER,
+    autoIncrement: true,
+    primaryKey: true
+  },
+  email: {
+    type: DataTypes.STRING,
+    allowNull: false,
+    unique: true
+  },
+  password: {
+    type: DataTypes.STRING,
+    allowNull: false
+  },
+  rol: {
+    type: DataTypes.STRING,
+    allowNull: false
+  }
+}, {
+  timestamps: false
+});
 
-function getUserById(id) {
-  return users.find(u => u.id === id);
-}
-
-function getAllUsers() {
-  return users;
-}
-
-module.exports = { createUser, getUserById, getAllUsers };
+export default User;   // ✅ ahora sí tienes export default

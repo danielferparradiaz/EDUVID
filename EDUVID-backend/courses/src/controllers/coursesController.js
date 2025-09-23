@@ -121,3 +121,22 @@ export const eliminarCurso = async (req, res) => {
     return res.status(500).json({ error: "Error en el servidor" });
   }
 };
+
+
+export const validateIfCourseExistById = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const curso = await Course.findByPk(id);
+
+    if (!curso) {
+      return res.status(404).json({ error: "Curso no encontrado" });
+    }
+
+    return res.json({ message: true });
+
+  } catch (error) {
+    console.error("El curso no existe, revisa la información:", error);
+    return res.status(500).json({ error: "Error en el servidor" });
+  }
+};

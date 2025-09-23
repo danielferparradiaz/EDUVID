@@ -6,33 +6,26 @@ export const enrollUser = async (req, res) => {
   try {
     const { studentId, instructorId, courseId } = req.body;
 
-    // Validar campos obligatorios
+    // 1. Validar campos obligatorios
     if (!studentId || !instructorId || !courseId) {
       return res.status(400).json({ message: "Todos los campos son obligatorios" });
     }
 
-    // 🔹 1. Validar que el usuario exista en el microservicio de usuarios
+    // 2. Validar existencia en microservicios
     try {
-      await axios.get(`http://localhost:8081/api/validateUser/${studentId}`);
-    } catch (error) {
-      return res.status(400).json({
-        message: "El usuario no existe en el sistema",
-        error: error.response?.data || error.message,
-      });
+      await validateUserExists(studentId);
+      await validateCourseExists(courseId);
+    } catch (validationError) {
+      return res.status(400).json({ message: validationError.message });
     }
 
-    // 🔹 2. Verificar si ya existe inscripción del estudiante en ese curso
-    const existingEnrollment = await Enrollment.findOne({
-      where: { studentId, courseId },
-    });
-
+    // 3. Verificar si ya existe inscripción
+    const existingEnrollment = await Enrollment.findOne({ where: { studentId, courseId } });
     if (existingEnrollment) {
-      return res.status(409).json({ 
-        message: "El estudiante ya está inscrito en este curso" 
-      });
+      return res.status(409).json({ message: "El estudiante ya está inscrito en este curso" });
     }
 
-    // 🔹 3. Crear inscripción nueva
+    // 4. Crear inscripción nueva
     const enrollment = await Enrollment.create({
       studentId,
       instructorId,
@@ -44,12 +37,41 @@ export const enrollUser = async (req, res) => {
     return res.status(201).json(enrollment);
 
   } catch (error) {
-    console.error("Error al crear la inscripción:", error);
+    console.error("❌ Error al crear la inscripción:", error);
     return res.status(500).json({ message: "Error interno del servidor" });
   }
 };
 
 
+// Valida existencia de usuario en microservicio de usuarios
+export const validateUserExists = async (userId) => {
+  try {
+    const { data } = await axios.get(`http://localhost:8092/api/validate-user/${userId}`);
+    
+    // El microservicio de usuarios devuelve algo como:
+    // { "exists": true, "user": { "id": 1, "email": "...", "rol": "..." } }
+    if (data.exists) {
+      return true;
+    }
+    throw new Error("El usuario no existe en el sistema");
+  } catch (error) {
+    throw new Error("El usuario no existe en el sistema");
+  }
+};
+
+
+// Valida existencia de curso en microservicio de cursos
+export const validateCourseExists = async (courseId) => {
+  try {
+    const { data } = await axios.get(`http://localhost:8084/api/validate-course/${courseId}`);
+    if (data.message === true) {
+      return true;
+    }
+    throw new Error("El curso no existe en el sistema");
+  } catch (error) {
+    throw new Error("El curso no existe en el sistema");
+  }
+};
 
 
 
