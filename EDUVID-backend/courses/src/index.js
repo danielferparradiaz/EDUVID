@@ -14,7 +14,7 @@ app.use(express.json());
 app.use("/api", coursesRoutes);
 
 // Puerto
-const PORT = process.env.PORT || 8084;
+const PORT = process.env.PORT || 8095;
 app.listen(PORT, () => {
   console.log(`Course-service corriendo en http://localhost:${PORT}`);
 });

@@ -37,6 +37,26 @@
         </div>
     </nav>
 
+    <form action="http://localhost:8088/api/enrollments" method="POST">
+    
+    <label for="studentId">ID Estudiante</label>
+    <input type="number" id="studentId" name="studentId" required>
+    
+    <label for="instructorId">ID Instructor</label>
+    <input type="number" id="instructorId" name="instructorId" required>
+    
+    <label for="courseId">ID Curso</label>
+    <input type="number" id="courseId" name="courseId" required>
+    
+    <label for="enrollmentDateStart">Fecha Inicio</label>
+    <input type="date" id="enrollmentDateStart" name="enrollmentDateStart" required>
+    
+    <label for="enrollmentDateEnd">Fecha Fin (opcional)</label>
+    <input type="date" id="enrollmentDateEnd" name="enrollmentDateEnd">
+    
+    <button type="submit">Guardar Inscripción</button>
+  </form>
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
 </body>

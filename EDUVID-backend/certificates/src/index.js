@@ -28,7 +28,7 @@ app.use(express.json());
 app.use("/certificates", certificatesRoutes);
 
 // Levanta el servidor en el puerto definido en .env o 3006 por defecto.
-const PORT = process.env.PORT || 3006;
+const PORT = process.env.PORT || 8085;
 app.listen(PORT, () => {
     console.log(`Certificates service listening on port ${PORT}`);
 });

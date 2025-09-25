@@ -1,13 +1,15 @@
 import express from "express";
-import enrollmentsRoutes from "./routes/enrollmentsRoutes.js";
-import dotenv from "dotenv";
+import enrollmentRoutes from "./routes/enrollmentsRoutes.js";
+import "./config/eureka.js"; // se inicializa solo
 
 const app = express();
-app.use(express.json());
-app.use("/api", enrollmentsRoutes);
-dotenv.config();
+const PORT = 8088;
 
-const PORT = process.env.PORT || 8088;
+app.use(express.json());
+
+// Rutas principales
+app.use("/api", enrollmentRoutes);
+
 app.listen(PORT, () => {
-  console.log(`User-service corriendo en http://localhost:${PORT}`);
+  console.log(`📘 Enrollment Service corriendo en puerto ${PORT}`);
 });

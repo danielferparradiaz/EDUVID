@@ -3,11 +3,12 @@
     "axios": "^1.12.2",
     "cors": "^2.8.5",
     "dotenv": "^17.2.2",
+    "eureka-js-client": "^4.5.0",
     "express": "^5.1.0",
     "morgan": "^1.10.1",
     "mysql2": "^3.15.0",
-    "sequelize": "^6.37.7",
-    "nodemon": "^3.1.10"
+    "nodemon": "^3.1.10",
+    "sequelize": "^6.37.7"
   },
   "name": "enrollments",
   "version": "1.0.0",

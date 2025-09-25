@@ -1,5 +1,7 @@
-import Enrollment from "../models/enrollmentsModel.js";
 import axios from "axios";
+import Enrollment from "../models/enrollmentsModel.js";
+import eurekaClient from "../config/eureka.js"; 
+
 
 // Crear una nueva inscripción
 export const enrollUser = async (req, res) => {
@@ -42,99 +44,70 @@ export const enrollUser = async (req, res) => {
   }
 };
 
+// 🔎 Función auxiliar: obtener URL de un servicio
+function getServiceUrl(appName) {
+  const instances = eurekaClient.getInstancesByAppId(appName);
+  if (!instances || instances.length === 0) {
+    throw new Error(`❌ No hay instancias para ${appName}`);
+  }
+  // Tomar la primera instancia (luego puedes hacer round-robin para balanceo)
+  const instance = instances[0];
+  return `http://${instance.hostName}:${instance.port.$}`;
+}
 
-// Valida existencia de usuario en microservicio de usuarios
+// Validar usuario en USER-SERVICE
 export const validateUserExists = async (userId) => {
   try {
-    const { data } = await axios.get(`http://localhost:8092/api/validate-user/${userId}`);
-    
-    // El microservicio de usuarios devuelve algo como:
-    // { "exists": true, "user": { "id": 1, "email": "...", "rol": "..." } }
+    const userServiceUrl = getServiceUrl("USER-SERVICE");
+    const { data } = await axios.get(`${userServiceUrl}/api/validate-user/${userId}`);
+
     if (data.exists) {
       return true;
     }
     throw new Error("El usuario no existe en el sistema");
   } catch (error) {
-    throw new Error("El usuario no existe en el sistema");
+    console.error(error.message);
+    throw new Error("Error validando usuario en USER-SERVICE");
   }
 };
 
-
 // Valida existencia de curso en microservicio de cursos
-export const validateCourseExists = async (courseId) => {
+export const validateCourseExists = async (userId) => {
   try {
-    const { data } = await axios.get(`http://localhost:8084/api/validate-course/${courseId}`);
-    if (data.message === true) {
+    const userServiceUrl = getServiceUrl("COURSES-SERVICE");
+    const { data } = await axios.get(`${userServiceUrl}/api/validate-course/${userId}`);
+
+    if (data.exists) {
       return true;
     }
     throw new Error("El curso no existe en el sistema");
   } catch (error) {
-    throw new Error("El curso no existe en el sistema");
+    console.error(error.message);
+    throw new Error("Error validando usuario en COURSES-SERVICE");
   }
 };
 
 
-
-// Obtener inscripciones por ID de usuario (studentId)
-export const getEnrollmentByUserId = async (req, res) => {
+// Validar si un usuario está inscrito en un curso específico
+export const validateEnrollment = async (req, res) => {
   try {
-    const { studentId } = req.query;  // 👈 lo tomas de query
+    const { userId, courseId } = req.params; // vienen en la URL
 
-    if (!studentId) {
-      return res.status(400).json({ message: "Se requiere el ID del estudiante" });
+    if (!userId || !courseId) {
+      return res.status(400).json({ exists: false, message: "Faltan parámetros userId o courseId" });
     }
 
-    const enrollments = await Enrollment.findAll({
-      where: { studentId }
+    const enrollment = await Enrollment.findOne({
+      where: { studentId: userId, courseId }
     });
 
-    if (!enrollments || enrollments.length === 0) {
-      return res.status(404).json({ message: "No se encontraron inscripciones para este usuario" });
+    if (enrollment) {
+      return res.json({ exists: true });
     }
 
-    return res.json(enrollments);
+    return res.json({ exists: false, message: "El usuario no está inscrito en este curso" });
   } catch (error) {
-    console.error("Error al obtener inscripciones:", error);
-    return res.status(500).json({ message: "Error interno del servidor" });
-  }
-};
-
-
-
-
-// Validación de inscripción de un usuario con su ID
-export const validateIfUserExist = async (req, res) => {
-  try {
-    const { userId } = req.params;  // 👈 el ID viene en la URL (ej: /enrollment/validate/5)
-
-    if (!userId) {
-      return res.status(400).json({ message: "Se requiere el ID del usuario" });
-    }
-
-    // Llamamos al microservicio de usuarios
-    const response = await axios.get(`http://localhost:8081/api/validateUser/${userId}`);
-
-    // Si el microservicio responde correctamente, retornamos esa info
-    return res.status(200).json({
-      message: "Usuario validado correctamente",
-      data: response.data
-    });
-
-  } catch (error) {
-    console.error("Error validando usuario:", error.message);
-
-    if (error.response) {
-      // Error devuelto por el microservicio
-      return res.status(error.response.status).json({
-        message: "Error desde microservicio de usuarios",
-        error: error.response.data
-      });
-    }
-
-    // Error interno (por ejemplo, microservicio caído)
-    return res.status(500).json({
-      message: "No se pudo validar el usuario",
-      error: error.message
-    });
+    console.error("❌ Error validando inscripción:", error);
+    return res.status(500).json({ exists: false, message: "Error interno del servidor" });
   }
 };
