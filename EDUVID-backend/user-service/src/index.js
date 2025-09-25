@@ -1,7 +1,8 @@
 import express from "express";
 import dotenv from "dotenv";
 import sequelize from "./config/db.js";
-import userRoutes from "./routes/userRoutes.js";  // 👈 import default
+import userRoutes from "./routes/userRoutes.js"; 
+import "./config/eureka.js";
 
 dotenv.config();
 
@@ -13,7 +14,7 @@ const PORT = process.env.PORT || 8092;
 app.listen(PORT, async () => {
   try {
     await sequelize.authenticate();
-    console.log("✅ Conexión MySQL exitosa");
+    console.log("Conexión MySQL exitosa");
     console.log(`User-service corriendo en http://localhost:${PORT}`);
   } catch (err) {
     console.error("❌ Error al conectar con DB:", err);

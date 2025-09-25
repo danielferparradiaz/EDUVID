@@ -1,10 +1,10 @@
 import { Router } from "express";
-import { enrollUser, getEnrollmentByUserId } from "../controllers/enrollmentsController.js";
+import { enrollUser, validateEnrollment } from "../controllers/enrollmentsController.js";
 
 const router = Router();
 
 router.post("/enrollUser", enrollUser);
-router.get("/getEnrollmentByUserId", getEnrollmentByUserId);
+router.get("/validate-enroll/:userId/:courseId", validateEnrollment);
 
 export default router;
 

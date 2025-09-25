@@ -22,7 +22,7 @@ app.use(express.json());
 app.use("/api", authRoutes);
 
 // Iniciar servidor
-const PORT = process.env.PORT || 8080;
+const PORT = process.env.PORT || 9000;
 app.listen(PORT, async () => {
   try {
     await sequelize.authenticate();

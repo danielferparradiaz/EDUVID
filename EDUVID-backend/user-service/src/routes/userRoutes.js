@@ -6,4 +6,4 @@ const router = Router();
 router.get("/validate-user/:id", validateUserById);
 
 
-export default router;  // 👈 exportación ESM
+export default router;

@@ -5,7 +5,7 @@
 // - listCertificates(req): GET /certificates?userId=
 // - generateCertificate(req): POST /certificates/generate  { userId, courseId }
 // - downloadCertificate(req): GET /certificates/:id/download  -> sirve HTML desde DB
-// - simulateEvent(req): POST /certificates/simulate-event  -> helper para pruebas (simula evento de Progress)
+// - simulateEvent(req): POST /certificates/simulate-event  -> helper para pruebas (simula evento de progress)
 // ------------------------------
 
 const axios = require("axios"); // usado para consultar Users/Courses si se configuran sus URLs
@@ -220,8 +220,8 @@ async function downloadCertificate(req, res) {
 
 /*  =========================
     POST /certificates/simulate-event
-    - Endpoint de pruebas: simula que Progress emitió un evento course_completed.
-    - En producción: Progress debería notificar a este servicio (via HTTP o, preferible, via bus de eventos).
+    - Endpoint de pruebas: simula que progress emitió un evento course_completed.
+    - En producción: progress debería notificar a este servicio (via HTTP o, preferible, via bus de eventos).
     - Comentario para el equipo: cuando integremos Rabbit/Kafka, reemplazar este endpoint por un consumidor/subscriptor.
 */
 async function simulateEvent(req, res) {

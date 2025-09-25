@@ -1,0 +1,21 @@
+{
+  "name": "gateway-service",
+  "version": "1.0.0",
+  "description": "gateway para EDUVID",
+  "license": "ISC",
+  "author": "",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "axios": "^1.12.2",
+    "connect": "^3.7.0",
+    "consul": "^2.0.1",
+    "express": "^5.1.0",
+    "http": "^0.0.1-security",
+    "http-proxy-middleware": "^3.0.5",
+    "proxy-middleware": "^0.15.0"
+  }
+}
