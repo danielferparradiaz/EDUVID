@@ -1,71 +1,100 @@
 // src/models/certificatesModel.js
 // ------------------------------
-// Modelo de datos para la tabla `certificates`.
-// Contiene funciones pequeñas, atómicas y reutilizables:
-// - createCertificate: inserta fila (puede insertar content HTML en memoria).
-// - updateCertificateContent: actualiza file_url y content.
-// - getCertificatesByUser: lista metadatos de certificados de un usuario.
-// - getCertificateContentById: obtiene contenido (HTML) de un certificado.
-// NOTA: el controlador maneja control de errores; aquí devolvemos errores para que el caller los capture.
+// Modelo de datos para la tabla `certificates` usando Sequelize.
+// Incluye funciones atómicas y reutilizables:
+// - createCertificate
+// - updateCertificateContent
+// - getCertificatesByUser
+// - getCertificateContentById
 // ------------------------------
 
-const pool = require("./db");
+import { DataTypes } from "sequelize";
+import sequelize from "./db.js"; // tu instancia sequelize
+
+const Certificate = sequelize.define(
+  "Certificate",
+  {
+    id: {
+      type: DataTypes.INTEGER,
+      autoIncrement: true,
+      primaryKey: true,
+    },
+    userId: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+    },
+    courseId: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+    },
+    file_url: {
+      type: DataTypes.STRING(255),
+      allowNull: true,
+    },
+    content: {
+      type: DataTypes.TEXT("long"), // HTML puede ser grande
+      allowNull: true,
+    },
+    issuedAt: {
+      type: DataTypes.DATE,
+      allowNull: false,
+      defaultValue: DataTypes.NOW,
+    },
+  },
+  {
+    tableName: "certificates",
+    timestamps: false, // ya usamos issuedAt manual
+  }
+);
+
+// ------------------------------
+// Funciones utilitarias
+// ------------------------------
 
 /**
- * * Inserta un certificado.
- * @returns {Number} id insertado
+ * Inserta un certificado.
+ * @returns {Object} registro creado
  */
-async function createCertificate(
-    userId,
-    courseId,
-    fileUrl = null,
-    content = null
-) {
-    const [result] = await pool.query(
-        "INSERT INTO certificates (userId, courseId, file_url, content) VALUES (?, ?, ?, ?)",
-        [userId, courseId, fileUrl, content]
-    );
-    return result.insertId;
+async function createCertificate(userId, courseId, fileUrl = null, content = null) {
+  return await Certificate.create({ userId, courseId, file_url: fileUrl, content });
 }
 
 /**
- * * Actualiza file_url y content (HTML) del certificado.
- * Usado después de generar el HTML en memoria.
+ * Actualiza file_url y content (HTML) del certificado.
  */
 async function updateCertificateContent(id, fileUrl, content) {
-    await pool.query(
-        "UPDATE certificates SET file_url = ?, content = ? WHERE id = ?",
-        [fileUrl, content, id]
-    );
+  const cert = await Certificate.findByPk(id);
+  if (!cert) throw new Error("Certificate not found");
+  cert.file_url = fileUrl;
+  cert.content = content;
+  await cert.save();
+  return cert;
 }
 
 /**
- * * Lista metadatos de certificados de un usuario.
- * Devuelve: [{ id, userId, courseId, issuedAt, file_url }, ...]
+ * Lista metadatos de certificados de un usuario.
  */
 async function getCertificatesByUser(userId) {
-    const [rows] = await pool.query(
-        "SELECT id, userId, courseId, issuedAt, file_url FROM certificates WHERE userId = ? ORDER BY issuedAt DESC",
-        [userId]
-    );
-    return rows;
+  return await Certificate.findAll({
+    attributes: ["id", "userId", "courseId", "issuedAt", "file_url"],
+    where: { userId },
+    order: [["issuedAt", "DESC"]],
+  });
 }
 
 /**
- * * Trae el registro completo (incluye content).
- * Usado por el endpoint de descarga.
+ * Trae el registro completo (incluye content).
  */
 async function getCertificateContentById(id) {
-    const [rows] = await pool.query(
-        "SELECT id, userId, courseId, issuedAt, file_url, content FROM certificates WHERE id = ?",
-        [id]
-    );
-    return rows.length ? rows[0] : null;
+  return await Certificate.findByPk(id, {
+    attributes: ["id", "userId", "courseId", "issuedAt", "file_url", "content"],
+  });
 }
 
-module.exports = {
-    createCertificate,
-    updateCertificateContent,
-    getCertificatesByUser,
-    getCertificateContentById,
+export {
+  Certificate,
+  createCertificate,
+  updateCertificateContent,
+  getCertificatesByUser,
+  getCertificateContentById,
 };
