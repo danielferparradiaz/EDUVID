@@ -46,6 +46,18 @@ CREATE TABLE progress (
     FOREIGN KEY (courseId) REFERENCES courses(id)
 );
 
+CREATE TABLE certificates (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  userId INT NOT NULL,
+  courseId INT NOT NULL,
+  file_url VARCHAR(255) DEFAULT NULL,
+  content LONGTEXT DEFAULT NULL,
+  issuedAt TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  CONSTRAINT fk_certificates_user FOREIGN KEY (userId) REFERENCES usuarios(id),
+  CONSTRAINT fk_certificates_course FOREIGN KEY (courseId) REFERENCES courses(id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+
 
 
 
