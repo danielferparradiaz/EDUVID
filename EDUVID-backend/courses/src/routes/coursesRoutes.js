@@ -3,12 +3,20 @@ import { crearCurso, listar, infoCurso, actualizarCurso, eliminarCurso, validate
 
 const router = Router();
 
+// Middleware global de logging para rutas de cursos
+router.use((req, res, next) => {
+  console.log(`➡️ [CoursesRouter] ${req.method} ${req.originalUrl}`);
+  if (req.body && Object.keys(req.body).length > 0) {
+    console.log("📦 [CoursesRouter] Body:", req.body);
+  }
+  next();
+});
+
 router.post("/crear-curso", crearCurso);
 router.get("/listar", listar);
-router.get("/info-curso/:id", infoCurso);  // <- le paso el id por params
+router.get("/info-curso/:id", infoCurso);
 router.put("/actualizar-curso/:id", actualizarCurso);
-router.delete("/eliminar-curso/:id", eliminarCurso); // <- agrego delete
-router.get("/validate-course/:id", validateIfCourseExistById); // <- agrego delete
+router.delete("/eliminar-curso/:id", eliminarCurso);
+router.get("/validate-course/:id", validateIfCourseExistById);
 
 export default router;
-
