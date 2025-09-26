@@ -9,7 +9,7 @@
 // ------------------------------
 
 import { DataTypes } from "sequelize";
-import sequelize from "./db.js"; // tu instancia sequelize
+import sequelize from "../config/db.js"; // tu instancia sequelize
 
 const Certificate = sequelize.define(
   "Certificate",
