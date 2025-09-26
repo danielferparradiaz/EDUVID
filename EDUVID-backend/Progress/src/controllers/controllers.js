@@ -13,16 +13,23 @@ export const completeLesson = async (req, res) => {
       return res.status(400).json({ error: "Faltan parámetros en la petición" });
     }
 
-    // ✅ Validar que el usuario exista
+    // Validar que el usuario exista
     try {
       await validateUserExists(userId);
     } catch (err) {
       return res.status(400).json({ error: err.message });
     }
 
-    // ✅ Validar que el usuario esté inscrito en el curso
+    // Validar que el usuario esté inscrito en el curso
     try {
       await validateUserEnrolled(userId, courseId);
+    } catch (err) {
+      return res.status(400).json({ error: err.message });
+    }
+
+    // Validar que el usuario esté inscrito en el curso
+    try {
+      await validateLessonById(lessonId);
     } catch (err) {
       return res.status(400).json({ error: err.message });
     }
@@ -127,6 +134,24 @@ export const validateUserExists = async (userId) => {
   } catch (error) {
     console.error("❌ Error validando usuario:", error.response?.data || error.message);
     throw new Error("Error validando usuario en USER-SERVICE");
+  }
+};
+
+// Validarexistencia de usuario en USER-SERVICE
+export const validateLessonById = async (lessonId) => {
+  try {
+    const contentServiceUrl = getServiceUrl("CONTENT-SERVICE");
+
+    const { data } = await axios.get(`${contentServiceUrl}/lessons/${lessonId}`);
+
+    if (data && data.lessonId) {
+      return true;
+    }
+
+    throw new Error("La leccion no existe en el curso ❌");
+  } catch (error) {
+    console.error("❌ Error validando la lección:", error.response?.data || error.message);
+    throw new Error("Error validando la leccion en CONTENT-SERVICE");
   }
 };
 

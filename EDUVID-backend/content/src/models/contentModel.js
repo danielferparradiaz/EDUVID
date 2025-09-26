@@ -1,31 +1,22 @@
-const db = require("./db");
+import Lesson from "./Lesson.js";
 
 // Crear lección
-function createLesson(data) {
-  const newLesson = {
-    id: db.lessons.length + 1,
-    courseId: data.courseId,
-    title: data.title,
-    description: data.description || "",
-    order: data.order || db.lessons.length + 1,
-    resourceUrl: data.resourceUrl || ""
-  };
-  db.lessons.push(newLesson);
-  return newLesson;
+async function createLesson(data) {
+  return await Lesson.create(data);
 }
 
 // Listar por curso
-function getLessonsByCourse(courseId) {
-  if (!courseId) return db.lessons;
-  return db.lessons.filter(l => l.courseId == courseId);
+async function getLessonsByCourse(courseId) {
+  if (!courseId) return await Lesson.findAll();
+  return await Lesson.findAll({ where: { courseId } });
 }
 
 // Obtener detalle
-function getLessonById(id) {
-  return db.lessons.find(l => l.id === id);
+async function getLessonById(id) {
+  return await Lesson.findByPk(id);
 }
 
-module.exports = {
+export {
   createLesson,
   getLessonsByCourse,
   getLessonById

@@ -2,14 +2,14 @@ import { Eureka } from "eureka-js-client";
 
 const eurekaClient = new Eureka({
   instance: {
-    app: "progress-SERVICE",
+    app: "PROGRESS-SERVICE",
     hostName: "localhost",
     ipAddr: "127.0.0.1",
     port: {
       $: 8097,
       "@enabled": true,
     },
-    vipAddress: "progress-SERVICE",
+    vipAddress: "PROGRESS-SERVICE",
     dataCenterInfo: {
       "@class": "com.netflix.appinfo.InstanceInfo$DefaultDataCenterInfo",
       name: "MyOwn",
@@ -24,9 +24,9 @@ const eurekaClient = new Eureka({
 
 eurekaClient.start((error) => {
   if (error) {
-    console.error("❌ Error registrando progress-SERVICE en Eureka:", error);
+    console.error("❌ Error registrando PROGRESS-SERVICE en Eureka:", error);
   } else {
-    console.log("✅ progress-SERVICE registrado en Eureka");
+    console.log("✅ PROGRESS-SERVICE registrado en Eureka");
   }
 });
 

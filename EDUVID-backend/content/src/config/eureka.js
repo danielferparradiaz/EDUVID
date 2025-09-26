@@ -2,14 +2,14 @@ import { Eureka } from "eureka-js-client";
 
 const eurekaClient = new Eureka({
   instance: {
-    app: "COURSES-SERVICE",
+    app: "CONTENT-SERVICE",
     hostName: "localhost",
     ipAddr: "127.0.0.1",
     port: {
-      $: 8095,
+      $: 5003,
       "@enabled": true,
     },
-    vipAddress: "COURSES-SERVICE",
+    vipAddress: "CONTENT-SERVICE",
     dataCenterInfo: {
       "@class": "com.netflix.appinfo.InstanceInfo$DefaultDataCenterInfo",
       name: "MyOwn",
@@ -24,9 +24,9 @@ const eurekaClient = new Eureka({
 
 eurekaClient.start((error) => {
   if (error) {
-    console.error("❌ Error registrando COURSES-SERVICE en Eureka:", error);
+    console.error("❌ Error registrando CONTENT-SERVICE en Eureka:", error);
   } else {
-    console.log("✅ COURSES-SERVICE registrado en Eureka");
+    console.log("✅ CONTENT-SERVICE registrado en Eureka");
   }
 });
 

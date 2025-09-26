@@ -12,6 +12,7 @@ const express = require("express");
 const morgan = require("morgan");
 const cors = require("cors");
 const certificatesRoutes = require("./routes/certificatesRoutes");
+const eurekaClient = require("./config/eureka");
 
 const app = express();
 
