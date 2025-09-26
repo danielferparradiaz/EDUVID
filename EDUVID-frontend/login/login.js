@@ -97,11 +97,9 @@ document.addEventListener("DOMContentLoaded", () => {
         const rol = document.querySelector("input[name='rol']:checked")?.value;
         if (!rol) return alert("Selecciona un rol.");
         payload.rol = rol;
-        // payload.password = await sha256(password);
         payload.password = password;
 
         console.log(payload);
-
 
         const res = await fetch("http://localhost:9000/api/login", {
           method: "POST",
@@ -111,13 +109,32 @@ document.addEventListener("DOMContentLoaded", () => {
 
         if (res.ok) {
           const data = await res.json();
+
+          // Guardar el token
           localStorage.setItem("jwt", data.token);
-          window.location.href = "../../EDUVID-frontend/dashboard/dashboard.html";
+
+          // Decodificar JWT (sin validar firma, solo lectura)
+          const base64Url = data.token.split(".")[1];
+          const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
+          const decodedPayload = JSON.parse(atob(base64));
+
+          console.log("JWT Decodificado:", decodedPayload);
+
+          // Redirección según rol
+          if (decodedPayload.rol === "profesor") {
+            window.location.href = "../../EDUVID-frontend/profesor/profesor.html";
+          } else if (decodedPayload.rol === "estudiante") {
+            window.location.href = "../../EDUVID-frontend/estudiante/estudiante.html";
+          } else {
+            window.location.href = "../../EDUVID-frontend/dashboard-admin/dashboard.html";
+          }
+
         } else {
           alert("Error en login");
           console.log(res);
         }
       }
+
 
       if (mode === "register") {
         const rol = document.querySelector("input[name='rol']:checked")?.value;
