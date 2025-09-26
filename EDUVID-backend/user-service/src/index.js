@@ -1,13 +1,25 @@
+import cors from "cors";
 import express from "express";
 import dotenv from "dotenv";
 import sequelize from "./config/db.js";
 import userRoutes from "./routes/userRoutes.js"; 
 import "./config/eureka.js";
 
+
 dotenv.config();
 
 const app = express();
 app.use(express.json());
+app.use(cors({
+  origin: "http://localhost:5500", // o el puerto donde sirves tu dashboard.html
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"]
+}));
+app.use((req, res, next) => {
+  console.log(`📡 Request recibido: ${req.method} ${req.originalUrl}`);
+  next();
+});
+
 app.use("/api", userRoutes);
 
 const PORT = process.env.PORT || 8092;
