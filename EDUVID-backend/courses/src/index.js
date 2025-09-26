@@ -1,6 +1,7 @@
 import express from "express";
 import coursesRoutes from "./routes/coursesRoutes.js";
 import dotenv from "dotenv";
+import eurekaClient from "./config/eureka.js";
 
 
 const app = express();
