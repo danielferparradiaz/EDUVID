@@ -22,7 +22,7 @@ const Enrollment = sequelize.define("enrollment", {
   },
   enrollmentDateStart: {
     type: DataTypes.DATE,
-    allowNull: false
+    allowNull: true
   },
   enrollmentDateEnd: {
     type: DataTypes.DATE,
