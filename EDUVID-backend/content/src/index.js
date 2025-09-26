@@ -1,6 +1,7 @@
 require("dotenv").config();
 const express = require("express");
 const contentRoutes = require("./routes/contentRoutes");
+const eureka = require("./config/eureka"); 
 
 const app = express();
 app.use(express.json());
