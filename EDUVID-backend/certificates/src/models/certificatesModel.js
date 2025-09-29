@@ -56,8 +56,10 @@ const Certificate = sequelize.define(
  * @returns {Object} registro creado
  */
 async function createCertificate(userId, courseId, fileUrl = null, content = null) {
-  return await Certificate.create({ userId, courseId, file_url: fileUrl, content });
+  const cert = await Certificate.create({ userId, courseId, file_url: fileUrl, content });
+  return cert.id; // 👈 solo retornamos el número
 }
+
 
 /**
  * Actualiza file_url y content (HTML) del certificado.

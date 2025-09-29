@@ -10,16 +10,49 @@
 
 const axios = require("axios"); // usado para consultar Users/Courses si se configuran sus URLs
 const model = require("../models/certificatesModel");
+const eurekaClient = require ("../config/eureka");
+
+// =========================
+// 🔎 Validar usuario en USER-SERVICE
+// =========================
+async function validateUserExists(userId) {
+    try {
+        const userServiceUrl = getServiceUrl("USER-SERVICE");
+        console.log(`📡 [validateUserExists] Consultando: ${userServiceUrl}/api/validate-user/${userId}`);
+
+        const { data } = await axios.get(`${userServiceUrl}/api/validate-user/${userId}`);
+        console.log("📥 [validateUserExists] Respuesta:", data);
+
+        if (data.exists) {
+            console.log("✅ [validateUserExists] Usuario válido");
+            return data.user; // devolver datos si los necesitas
+        }
+        throw new Error("El usuario no existe en el sistema");
+    } catch (error) {
+        console.error("❌ [validateUserExists] Error:", error.message);
+        throw new Error("Error validando usuario en USER-SERVICE");
+    }
+}
+
+// 🔎 Función auxiliar: obtener URL de un servicio desde Eureka
+function getServiceUrl(appName) {
+    console.log(`🌍 [getServiceUrl] Buscando instancias para: ${appName}`);
+    const instances = eurekaClient.getInstancesByAppId(appName);
+    console.log(`[getServiceUrl] Instancias encontradas:`, instances);
+
+    if (!instances || instances.length === 0) {
+        throw new Error(`❌ No hay instancias para ${appName}`);
+    }
+
+    const instance = instances[0];
+    const url = `http://${instance.hostName}:${instance.port.$}`;
+    console.log(`✅ [getServiceUrl] URL construida para ${appName}: ${url}`);
+    return url;
+}
 
 /*  =========================
     Helper: pedir info a Users
-    =========================
-    - Si process.env.USERS_SERVICE_URL está definido, hace una llamada HTTP:
-    GET {USERS_SERVICE_URL}/users/{userId}
-    - Si no está definido, devuelve un "mock" ligero con nombre/email.
-    !- Cuando se integre con el microservicio Users real, configurar USERS_SERVICE_URL en .env.
-    ?- Comentario para el equipo: aquí podríamos añadir caching simple (TTL) si hay muchas llamadas.
-*/
+    ========================= */
 async function fetchUserInfo(userId) {
     const usersUrl = process.env.USERS_SERVICE_URL;
     if (usersUrl && usersUrl.trim() !== "") {
@@ -29,11 +62,9 @@ async function fetchUserInfo(userId) {
             );
             return res.data;
         } catch (err) {
-            // Warning intencional: no rompemos el flujo si Users no está disponible (modo mock).
             console.warn("Users service error:", err.message);
         }
     }
-    // Mock simple (útil cuando los compañeros todavía no tienen el servicio)
     return {
         id: userId,
         name: `Usuario ${userId}`,
@@ -43,9 +74,7 @@ async function fetchUserInfo(userId) {
 
 /*  =========================
     Helper: pedir info a Courses
-    =========================
-    !- Igual que fetchUserInfo pero para COURSES_SERVICE_URL.
-*/
+    ========================= */
 async function fetchCourseInfo(courseId) {
     const coursesUrl = process.env.COURSES_SERVICE_URL;
     if (coursesUrl && coursesUrl.trim() !== "") {
@@ -63,11 +92,7 @@ async function fetchCourseInfo(courseId) {
 
 /*  =========================
     Builder: arma el HTML del certificado en memoria
-    =========================
-    - Devuelve el HTML como string.
-    - Mantener simple: la plantilla se genera en el servidor (no viene del usuario).
-    - Si más tarde se requiere internacionalización o logos, añadir variables aquí.
-*/
+    ========================= */
 function buildCertificateHtml(id, userInfo = {}, courseInfo = {}) {
     const issuedAt = new Date().toLocaleString();
     const userName =
@@ -108,17 +133,13 @@ function buildCertificateHtml(id, userInfo = {}, courseInfo = {}) {
 
 /*  =========================
     GET /certificates?userId=
-    - Devuelve metadatos y un downloadUrl por cada certificado.
-    - Nota: el downloadUrl apunta a /certificates/:id/download que servirá content desde la DB.
-*/
+    ========================= */
 async function listCertificates(req, res) {
     const userId = req.query.userId;
     if (!userId) return res.status(400).json({ error: "userId requerido" });
 
     try {
         const rows = await model.getCertificatesByUser(userId);
-
-        // Construye URL pública usando PUBLIC_BASE_URL (configurable en .env).
         const base =
             process.env.PUBLIC_BASE_URL &&
             process.env.PUBLIC_BASE_URL.trim() !== ""
@@ -138,34 +159,25 @@ async function listCertificates(req, res) {
 
 /*  =========================
     POST /certificates/generate
-    - Body esperado: { userId, courseId }
-    - Flujo:
-        1. Obtener userInfo y courseInfo (o mock si no hay servicios).
-        2. Insertar fila en DB para obtener id.
-        3. Generar HTML en memoria con dicho id.
-        4. Actualizar DB con file_url y content (HTML).
-        5. Devolver metadata (id, file_url, ...).
-    - Observación: insertamos primero para "fijar" el id que se mostrará en el certificado.
-*/
+    ========================= */
 async function generateCertificate(req, res) {
     const { userId, courseId } = req.body;
     if (!userId || !courseId)
         return res.status(400).json({ error: "userId y courseId requeridos" });
 
     try {
-        // Obtener datos de Users/Courses (o mock)
+        // 🔎 Validar usuario en USER-SERVICE
+        await validateUserExists(userId);
+
+        // Obtener datos de Users/Courses
         const [userInfo, courseInfo] = await Promise.all([
             fetchUserInfo(userId),
             fetchCourseInfo(courseId),
         ]);
 
-        // Insert inicial para obtener id
         const id = await model.createCertificate(userId, courseId, null, null);
-
-        // Generar HTML en memoria
         const html = buildCertificateHtml(id, userInfo, courseInfo);
 
-        // Construir file_url (metadato) y actualizar la fila con content (HTML)
         const base =
             process.env.PUBLIC_BASE_URL &&
             process.env.PUBLIC_BASE_URL.trim() !== ""
@@ -184,15 +196,13 @@ async function generateCertificate(req, res) {
         res.status(201).json(certificate);
     } catch (err) {
         console.error("Error generateCertificate:", err);
-        res.status(500).json({ error: "Error generando certificado" });
+        res.status(500).json({ error: err.message || "Error generando certificado" });
     }
 }
 
 /*  =========================
     GET /certificates/:id/download
-    - Sirve el contenido (HTML) guardado en la DB como attachment.
-    - No lee/escribe en disco: todo va por memoria.
-*/
+    ========================= */
 async function downloadCertificate(req, res) {
     const id = req.params.id;
     if (!id) return res.status(400).send("id requerido");
@@ -205,12 +215,8 @@ async function downloadCertificate(req, res) {
         const filename = `certificate-${id}.html`;
         const content = cert.content || "<p>Sin contenido</p>";
 
-        // Forzamos tipo HTML y sugerimos un nombre para la descarga. El navegador decide si abrir o guardar.
         res.setHeader("Content-Type", "text/html; charset=utf-8");
-        res.setHeader(
-            "Content-Disposition",
-            `attachment; filename="${filename}"`
-        );
+        res.setHeader("Content-Disposition", `attachment; filename="${filename}"`);
         res.send(content);
     } catch (err) {
         console.error("Error downloadCertificate:", err);
@@ -220,10 +226,7 @@ async function downloadCertificate(req, res) {
 
 /*  =========================
     POST /certificates/simulate-event
-    - Endpoint de pruebas: simula que progress emitió un evento course_completed.
-    - En producción: progress debería notificar a este servicio (via HTTP o, preferible, via bus de eventos).
-    - Comentario para el equipo: cuando integremos Rabbit/Kafka, reemplazar este endpoint por un consumidor/subscriptor.
-*/
+    ========================= */
 async function simulateEvent(req, res) {
     req.body = req.body || {};
     return await generateCertificate(req, res);

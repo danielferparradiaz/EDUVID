@@ -23,7 +23,7 @@ export const crearCurso = async (req, res) => {
       videoUrl,
       category,
       createdAt: new Date(),
-      updatedAt: new Date()
+      updatedAt: null
     });
 
     const response = { message: "Curso creado correctamente", curso: nuevoCurso };
