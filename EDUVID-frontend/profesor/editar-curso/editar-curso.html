@@ -12,103 +12,91 @@
 </head>
 
 <body>
+
   <header>
-    <h1 class="font-monospace text-center p-2">Dashboard Profesor</h1>
+    <nav class="navbar navbar-expand-lg bg-body-tertiary">
+      <div class="container-fluid justify-content-center">
+        <a class="navbar-brand fw-bold fs-3" href="#"><i class="bi bi-mortarboard"></i> EduVid</a>
+        <h6 class="font-monospace text-center mt-3 fst-italic">Profesor</h6>
+        <div class="collapse navbar-collapse d-flex flex-row-reverse" id="navbarNav">
+          <ul class="navbar-nav">
+            <li class="nav-item">
+              <a class="nav-link active" aria-current="page" href="../profesor.html">Mis Cursos</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#">Mis Estudiantes</a>
+            </li>
+            <!-- <li class="nav-item">
+              <a class="nav-link" href="#">Certificados</a>
+            </li> -->
+            <li class="nav-item">
+              <a class="nav-link fw-bold" href="../../login/login.html">Cerrar sesión</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
   </header>
 
-  <nav class="navbar navbar-expand-lg bg-body-tertiary">
-    <div class="container-fluid justify-content-center">
+  <div class="d-flex flex-column h-75 justify-content-center align-content-center align-items-center">
+    <div class="text-center font-monospace mt-1"> 
+      <h6 class="text-body-tertiary">Editar Curso</h6> 
+    </div>
+    <div class="text-center my-2">
+      <h4 class="text-body-secondary">
+        <span id="tab-curso" class="tab fw-bold text-primary" style="cursor:pointer">Curso</span> |
+        <span id="tab-leccion" class="tab" style="cursor:pointer">Lecciones</span>
+      </h4>
+    </div>
 
-      <div class="collapse navbar-collapse d-flex flex-row-reverse" id="navbarNav">
-        <ul class="navbar-nav">
-          <li class="nav-item">
-            <a class="nav-link active" aria-current="page" href="../profesor.html">Mis Cursos</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#">Mis Estudiantes</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#">Certificados</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link disabled" aria-disabled="true">Cerrar sesión</a>
-          </li>
-        </ul>
+    <div class="border p-4 border-secondary border-1 rounded bg-info bg-opacity-10 ">
+
+      <!-- Spinner -->
+      <div id="spinner" class="d-flex justify-content-center my-3">
+        <div class="spinner-border text-primary" role="status">
+          <span class="visually-hidden">Cargando...</span>
+        </div>
       </div>
-    </div>
-  </nav>
 
-  <div class="flex flex-column justify-content-center align-content-center align-items-center">
-    <div class="text-center font-monospace m-3">
-      <h4 class="text-body-secondary">Editar Curso</h4>
-    </div>
-    <div class="border m-3 p-4 border-secondary border-1 rounded bg-info bg-opacity-10 ">
-      <form class="row g-3 needs-validation" novalidate>
-        <div class="col-md-4">
-          <label for="validationCustom01" class="form-label">First name</label>
-          <input type="text" class="form-control" id="validationCustom01" value="Mark" required>
-          <div class="valid-feedback">
-            Looks good!
-          </div>
-        </div>
-        <div class="col-md-4">
-          <label for="validationCustom02" class="form-label">Last name</label>
-          <input type="text" class="form-control" id="validationCustom02" value="Otto" required>
-          <div class="valid-feedback">
-            Looks good!
-          </div>
-        </div>
-        <div class="col-md-4">
-          <label for="validationCustomUsername" class="form-label">Username</label>
-          <div class="input-group has-validation">
-            <span class="input-group-text" id="inputGroupPrepend">@</span>
-            <input type="text" class="form-control" id="validationCustomUsername" aria-describedby="inputGroupPrepend"
-              required>
-            <div class="invalid-feedback">
-              Please choose a username.
-            </div>
-          </div>
+      <!-- Formulario Curso -->
+      <form id="form-editar-curso" class="row g-3 needs-validation d-none" novalidate>
+        <div class="col-md-6">
+          <label class="form-label">Nombre</label>
+          <input type="text" class="form-control" id="nombre" required>
         </div>
         <div class="col-md-6">
-          <label for="validationCustom03" class="form-label">City</label>
-          <input type="text" class="form-control" id="validationCustom03" required>
-          <div class="invalid-feedback">
-            Please provide a valid city.
-          </div>
+          <label class="form-label">Categoría</label>
+          <input type="text" class="form-control" id="category" required>
         </div>
-        <div class="col-md-3">
-          <label for="validationCustom04" class="form-label">State</label>
-          <select class="form-select" id="validationCustom04" required>
-            <option selected disabled value="">Choose...</option>
-            <option>...</option>
-          </select>
-          <div class="invalid-feedback">
-            Please select a valid state.
-          </div>
+        <div class="col-md-12">
+          <label class="form-label">Descripción</label>
+          <textarea class="form-control" id="descripcion" rows="3" required></textarea>
         </div>
-        <div class="col-md-3">
-          <label for="validationCustom05" class="form-label">Zip</label>
-          <input type="text" class="form-control" id="validationCustom05" required>
-          <div class="invalid-feedback">
-            Please provide a valid zip.
-          </div>
+        <div class="col-md-12">
+          <label class="form-label">URL del Video</label>
+          <input type="text" class="form-control" id="videoUrl">
         </div>
-        <div class="col-12">
-          <div class="form-check">
-            <input class="form-check-input" type="checkbox" value="" id="invalidCheck" required>
-            <label class="form-check-label" for="invalidCheck">
-              Agree to terms and conditions
-            </label>
-            <div class="invalid-feedback">
-              You must agree before submitting.
-            </div>
-          </div>
+        <div class="col-12 d-flex justify-content-between">
+          <button type="button" id="btn-eliminar" class="btn btn-outline-danger">Eliminar</button>
+          <button type="button" id="btn-guardar" class="btn btn-outline-success">Guardar</button>
         </div>
-        <div class="col-12">
-          <button type="button" class="btn btn-outline-success">Guardar</button>
+      </form>
+
+      <!-- Formulario Lección -->
+      <form id="form-leccion" class="row g-3 d-none">
+        <div class="col-md-12">
+          <label class="form-label">Título de la Lección</label>
+          <input type="text" class="form-control" id="lesson-title" required>
+        </div>
+        <div class="col-12 d-flex justify-content-between">
+          <button type="button" id="btn-eliminar-leccion" class="btn btn-outline-danger">Eliminar Lección</button>
+          <button type="button" id="btn-guardar-leccion" class="btn btn-outline-success">Guardar Lección</button>
         </div>
       </form>
     </div>
+
+
+
 
   </div>
 

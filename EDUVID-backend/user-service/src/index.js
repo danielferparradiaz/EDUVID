@@ -12,10 +12,11 @@ dotenv.config();
 const app = express();
 app.use(morgan("dev"));
 app.use(cors({
-  origin: "http://localhost:5500", // o el puerto donde sirves tu dashboard.html
+  origin: ["http://localhost:5500", "http://127.0.0.1:5500"],
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
   allowedHeaders: ["Content-Type", "Authorization"]
 }));
+
 app.use((req, res, next) => {
   console.log(`📡 Request recibido: ${req.method} ${req.originalUrl}`);
   next();

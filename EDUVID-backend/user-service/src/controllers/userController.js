@@ -1,5 +1,41 @@
 import User from "../models/User.js";
 
+import { Enrollment, Usuario, Course } from "../models/associations.js";
+
+export const listStudentsByTeacher = async (req, res) => {
+  try {
+    const { teacherId } = req.params;
+    console.log(`📥 [listStudentsByTeacher] teacherId recibido: ${teacherId}`);
+
+    const enrollments = await Enrollment.findAll({
+      where: { instructorId: teacherId },
+      include: [
+        {
+          model: Usuario,
+          as: "student",
+          attributes: ["id", "email", "rol"]
+        },
+        {
+          model: Course,
+          as: "course",
+          attributes: ["id", "title", "category"]
+        }
+      ]
+    });
+
+    if (!enrollments.length) {
+      return res.status(404).json({ message: "No hay estudiantes inscritos en tus cursos." });
+    }
+
+    return res.json(enrollments);
+
+  } catch (error) {
+    console.error("❌ [listStudentsByTeacher] Error:", error);
+    return res.status(500).json({ message: "Error interno al listar estudiantes." });
+  }
+};
+
+
 export const validateUserById = async (req, res) => {
   try {
     const { id } = req.params;
