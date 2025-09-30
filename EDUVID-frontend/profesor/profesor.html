@@ -13,88 +13,64 @@
 
 <body>
   <header>
-    <h1 class="font-monospace text-center">Dashboard Profesor</h1>
+    <h1 class="font-monospace text-center p-2">Dashboard Profesor</h1>
   </header>
 
   <nav class="navbar navbar-expand-lg bg-body-tertiary">
     <div class="container-fluid justify-content-center">
-      <a class="navbar-brand" href="#">Navbar</a>
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
-        aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="collapse navbar-collapse" id="navbarNav">
+
+      <div class="collapse navbar-collapse d-flex flex-row-reverse" id="navbarNav">
         <ul class="navbar-nav">
           <li class="nav-item">
-            <a class="nav-link active" aria-current="page" href="#">Home</a>
+            <a class="nav-link active" aria-current="page" href="./profesor.html">Mis Cursos</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="#">Features</a>
+            <a class="nav-link" href="./mis-estudiantes/mis-estudiantes.html">Mis Estudiantes</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="#">Pricing</a>
+            <a class="nav-link" href="./certificados/certificados.html">Certificados</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link disabled" aria-disabled="true">Disabled</a>
+            <a class="nav-link disabled" aria-disabled="true">Cerrar sesión</a>
           </li>
         </ul>
       </div>
     </div>
   </nav>
 
-  <!-- Dashboard Profesor -->
-  <!-- <section id="dashboard">
-    <h2>📊 Mis Cursos</h2>
-    <p>Aquí se mostrarán las estadísticas de tus cursos:</p>
-    <ul>
-      <li>Inscriptos</li>
-      <li>% completado promedio</li>
-    </ul>
-
-    <h3>🔔 Notificaciones</h3>
-    <div id="notificaciones">
-      <p>No tienes notificaciones nuevas.</p>
-    </div>
-  </section> -->
-
   <div class="flex flex-column justify-content-center align-content-center align-items-center">
-    <h2 class="justify-content-center align-content-center align-items-center ">📊 Mis Cursos</h2>
-    <div class="card" style="width: 18rem;">
-      <img src="https://armandonegrete.com/wp-content/uploads/2022/05/PROGAM-FOR-SALE-1-720x400.webp" class="card-img-top" alt="...">
-      <div class="card-body">
-        <h5 class="card-title">Card title</h5>
-        <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card’s
-          content.</p>
-        <a href="#" class="btn btn-primary">Go somewhere</a>
+    <div class="border m-3 p-4 border-secondary border-1 rounded bg-info bg-opacity-10">
+      <img src="https://aulasenvivo.com/wp-content/uploads/2020/06/videoclasesgrabadas.jpg"
+        class="card-img-top p-2 rounded" alt="..." width="300" height="150">
+
+      <h4 class="fw-lighter p-2">Nombre del curso</h4>
+
+      <p class="card-text p-2">Some quick example text to build on the card title and make up the bulk of the card’s
+        content.</p>
+      <div class="d-flex flex-row-reverse">
+        <a type="button" class="btn btn-outline-primary" href="./editar-curso/editar-curso.html">Editar Curso</a>
       </div>
+
     </div>
+
+    <div class="d-flex justify-content-center mt-5">
+      <nav aria-label="Page navigation example">
+        <ul class="pagination justify-content-center">
+          <li class="page-item disabled">
+            <a class="page-link">Previous</a>
+          </li>
+          <li class="page-item"><a class="page-link" href="#">1</a></li>
+          <li class="page-item"><a class="page-link" href="#">2</a></li>
+          <li class="page-item"><a class="page-link" href="#">3</a></li>
+          <li class="page-item">
+            <a class="page-link" href="#">Next</a>
+          </li>
+        </ul>
+      </nav>
+    </div>
+
   </div>
 
-  <!-- Panel de Administración -->
-  <!-- <section id="panel">
-    <h2>⚙️ Panel de Administración de Curso</h2>
-    <ul>
-      <li>Crear/editar curso</li>
-      <li>Agregar lecciones</li>
-      <li>Subir recursos</li>
-      <li>Publicar / Despublicar curso</li>
-    </ul>
-
-    <h3>👨‍🎓 Lista de alumnos</h3>
-    <div id="lista-alumnos">
-      <p>No hay alumnos inscritos todavía.</p>
-    </div>
-  </section> -->
-
-  <!-- Vista de Alumno -->
-  <!-- <section id="vista-alumno">
-    <h2>📖 Vista de Alumno</h2>
-    <p>Ficha del alumno en su curso:</p>
-    <ul>
-      <li>Progreso</li>
-      <li>Fecha de inscripción</li>
-    </ul>
-  </section> -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
     integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
     crossorigin="anonymous"></script>
