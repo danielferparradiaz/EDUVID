@@ -101,7 +101,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         console.log(payload);
 
-        const res = await fetch("http://localhost:9000/api/login", {
+        const res = await fetch("http://localhost:9000/auth/login", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(payload),

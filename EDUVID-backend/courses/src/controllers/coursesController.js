@@ -167,3 +167,34 @@ export const validateIfCourseExistById = async (req, res) => {
   }
 };
 
+
+/**
+ * Listar cursos por profesor (instructorId)
+ */
+export const listarByprofesorId = async (req, res) => {
+  try {
+    const { id } = req.params; // id del profesor
+    console.log("📥 [listarByprofesorId] Params recibidos:", { id });
+
+    const cursos = await Course.findAll({
+      where: { instructorId: id },
+      order: [["createdAt", "DESC"]],
+    });
+
+    if (!cursos || cursos.length === 0) {
+      console.warn("⚠️ [listarByprofesorId] No se encontraron cursos para el profesor:", id);
+      return res.status(404).json({ error: "No se encontraron cursos para este profesor" });
+    }
+
+    console.log(`✅ [listarByprofesorId] Cursos encontrados: ${cursos.length}`);
+    return res.json(cursos);
+
+  } catch (error) {
+    console.error("❌ [listarByprofesorId] Error:", error);
+    return res.status(500).json({ error: "Error en el servidor" });
+  }
+};
+
+
+
+

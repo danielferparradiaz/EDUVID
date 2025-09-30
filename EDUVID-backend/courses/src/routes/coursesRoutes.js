@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { crearCurso, listar, infoCurso, actualizarCurso, eliminarCurso, validateIfCourseExistById } from "../controllers/coursesController.js";
+import { crearCurso, listar, infoCurso, actualizarCurso, eliminarCurso, validateIfCourseExistById, listarByprofesorId } from "../controllers/coursesController.js";
 
 const router = Router();
 
@@ -14,6 +14,7 @@ router.use((req, res, next) => {
 
 router.post("/crear-curso", crearCurso);
 router.get("/listar", listar);
+router.get("/listarByTeacherId/:id", listarByprofesorId);
 router.get("/info-curso/:id", infoCurso);
 router.put("/actualizar-curso/:id", actualizarCurso);
 router.delete("/eliminar-curso/:id", eliminarCurso);
