@@ -34,6 +34,9 @@ document.addEventListener("DOMContentLoaded", async () => {
     tabCurso.classList.remove("text-primary", "fw-bold");
     formLeccion.classList.remove("d-none");
     formCurso.classList.add("d-none");
+
+    // cargar listado
+    cargarLecciones(cursoId, token);
   });
 
   // 📥 Precargar curso
@@ -49,6 +52,8 @@ document.addEventListener("DOMContentLoaded", async () => {
     document.getElementById("descripcion").value = curso.descripcion || "";
     document.getElementById("videoUrl").value = curso.videoUrl || "";
     document.getElementById("category").value = curso.category || "";
+    document.getElementById("curso-nombre-lecciones").textContent = curso.nombre || "";
+
 
     spinner.classList.add("d-none");
     formCurso.classList.remove("d-none");
@@ -56,6 +61,48 @@ document.addEventListener("DOMContentLoaded", async () => {
     console.error("❌ Error cargando curso:", err);
     alert("No se pudo cargar el curso");
   }
+
+  async function cargarLecciones(cursoId, token) {
+    try {
+      const res = await fetch(`http://localhost:5003/lessons?courseId=${cursoId}`, {
+        headers: { "Authorization": `Bearer ${token}` }
+      });
+
+      if (!res.ok) throw new Error("Error cargando lecciones");
+
+      const lecciones = await res.json();
+      const lista = document.getElementById("lista-lecciones");
+      lista.innerHTML = "";
+
+      if (lecciones.length === 0) {
+        lista.innerHTML = `<li class="list-group-item text-muted">Aún no hay lecciones.</li>`;
+        return;
+      }
+
+      renderLecciones(lecciones);
+
+    } catch (err) {
+      console.error("❌ Error cargando lecciones:", err);
+      alert("No se pudieron cargar las lecciones");
+    }
+  }
+
+
+  async function eliminarLeccion(lessonId) {
+    if (!confirm("¿Eliminar esta lección?")) return;
+
+    const res = await fetch(`http://localhost:5003/lessons/${lessonId}`, {
+      method: "DELETE",
+      headers: { "Authorization": `Bearer ${token}` }
+    });
+
+    if (!res.ok) return alert("Error eliminando lección");
+    alert("🗑️ Lección eliminada correctamente");
+
+    // recargar listado
+    cargarLecciones(cursoId, token);
+  }
+
 
   // 📌 Guardar curso
   btnGuardarCurso.addEventListener("click", async () => {
@@ -91,6 +138,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   // 📌 Guardar lección
   btnGuardarLeccion.addEventListener("click", async () => {
     const title = document.getElementById("lesson-title").value.trim();
+    if (!title) return alert("⚠️ Escribe un título para la lección");
 
     const res = await fetch(`http://localhost:5003/lessons`, {
       method: "POST",
@@ -100,6 +148,9 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     if (!res.ok) return alert("Error creando lección");
     alert("✅ Lección creada correctamente");
+
+    document.getElementById("lesson-title").value = "";
+    cargarLecciones(cursoId, token);
   });
 
   // 📌 Eliminar lección (ejemplo: deberías pasar el id de la lección)
@@ -116,3 +167,80 @@ document.addEventListener("DOMContentLoaded", async () => {
     alert("🗑️ Lección eliminada correctamente");
   });
 });
+
+
+function renderLecciones(lecciones) {
+  const lista = document.getElementById("lista-lecciones");
+  lista.innerHTML = "";
+
+  lecciones.forEach((l, i) => {
+    const div = document.createElement("div");
+    div.className = "col-12";
+
+    div.innerHTML = `
+      <div class="card shadow-sm border-0">
+        <div class="card-body d-flex justify-content-between align-items-center">
+          <div id="leccion-view-${l.id}" class="w-100 d-flex justify-content-between align-items-center">
+            <h6 class="fw-bold mb-0">Lección ${i + 1}: ${l.title}</h6>
+            <div>
+              <button class="btn btn-sm btn-outline-primary me-2" onclick="editarLeccion(${l.id}, '${l.title}')">
+                <i class="bi bi-pencil"></i>
+              </button>
+              <button class="btn btn-sm btn-outline-danger" onclick="eliminarLeccion(${l.id})">
+                <i class="bi bi-trash"></i>
+              </button>
+            </div>
+          </div>
+
+          <!-- Vista edición oculta -->
+          <div id="leccion-edit-${l.id}" class="d-none w-100">
+            <div class="d-flex justify-content-between align-items-center">
+              <input type="text" id="edit-input-${l.id}" class="form-control me-2" value="${l.title}">
+              <button class="btn btn-success btn-sm" onclick="guardarEdicion(${l.id})">
+                <i class="bi bi-check2"></i> Guardar
+              </button>
+              <button class="btn btn-secondary btn-sm ms-2" onclick="cancelarEdicion(${l.id})">
+                Cancelar
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    `;
+    lista.appendChild(div);
+  });
+}
+
+// Lógica editar
+function editarLeccion(id, title) {
+  document.getElementById(`leccion-view-${id}`).classList.add("d-none");
+  document.getElementById(`leccion-edit-${id}`).classList.remove("d-none");
+}
+
+function cancelarEdicion(id) {
+  document.getElementById(`leccion-view-${id}`).classList.remove("d-none");
+  document.getElementById(`leccion-edit-${id}`).classList.add("d-none");
+}
+
+function guardarEdicion(id) {
+  const nuevoTitulo = document.getElementById(`edit-input-${id}`).value;
+
+  fetch(`http://localhost:5003/lessons/${id}`, {
+    method: "PUT",
+    headers: { 
+      "Content-Type": "application/json", 
+      // "Authorization": `Bearer ${localStorage.getItem("jwt")}` 
+    },
+    body: JSON.stringify({ title: nuevoTitulo })
+  })
+  .then(res => {
+    if (!res.ok) throw new Error("Error al actualizar");
+    return res.json();
+  })
+  .then(() => {
+    alert("Lección actualizada ✅");
+    cargarLecciones(cursoId, localStorage.getItem("jwt")); // refresca lista
+  })
+  .catch(() => alert("Error al actualizar la lección ❌"));
+}
+

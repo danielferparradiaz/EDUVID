@@ -39,8 +39,8 @@
   </header>
 
   <div class="d-flex flex-column h-75 justify-content-center align-content-center align-items-center">
-    <div class="text-center font-monospace mt-1"> 
-      <h6 class="text-body-tertiary">Editar Curso</h6> 
+    <div class="text-center font-monospace mt-1">
+      <h6 class="text-body-tertiary">Editar Curso</h6>
     </div>
     <div class="text-center my-2">
       <h4 class="text-body-secondary">
@@ -83,16 +83,47 @@
       </form>
 
       <!-- Formulario Lección -->
+      <!-- Formulario Lección -->
       <form id="form-leccion" class="row g-3 d-none">
-        <div class="col-md-12">
-          <label class="form-label">Título de la Lección</label>
-          <input type="text" class="form-control" id="lesson-title" required>
+        <!-- Nombre del curso -->
+        <div class="col-12 mb-3">
+          <h4 class="fw-bold text-dark">
+            Curso: <span id="curso-nombre-lecciones" class="text-primary"></span>
+          </h4>
+          <p class="text-muted">Administra las lecciones de este curso</p>
+          <hr>
         </div>
-        <div class="col-12 d-flex justify-content-between">
-          <button type="button" id="btn-eliminar-leccion" class="btn btn-outline-danger">Eliminar Lección</button>
-          <button type="button" id="btn-guardar-leccion" class="btn btn-outline-success">Guardar Lección</button>
+
+        <!-- Crear nueva lección -->
+        <div class="col-12">
+          <div class="card shadow-sm border-0 mb-4">
+            <div class="card-body">
+              <h5 class="card-title text-secondary">➕ Agregar nueva lección</h5>
+              <div class="row g-3">
+                <div class="col-md-9">
+                  <input type="text" class="form-control" id="lesson-title" placeholder="Título de la lección" required>
+                </div>
+                <div class="col-md-3 d-flex justify-content-end">
+                  <button type="button" id="btn-guardar-leccion" class="btn btn-success w-100">
+                    <i class="bi bi-plus-circle"></i> Guardar
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Listado de lecciones -->
+        <div class="col-12">
+          <h5 class="fw-bold text-dark mb-3">📋 Lecciones creadas</h5>
+          <div id="lista-lecciones" class="row g-3">
+            <!-- Aquí se insertan dinámicamente las tarjetas de cada lección -->
+          </div>
         </div>
       </form>
+
+
+
     </div>
 
 
