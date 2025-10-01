@@ -4,7 +4,8 @@ import {
   getUserProfile, 
   updateUser, 
   listTeachers, 
-  validateUserById 
+  validateUserById ,
+  listStudentsByTeacher
 } from "../controllers/userController.js";
 
 const router = Router();
@@ -27,5 +28,7 @@ router.get("/users", listTeachers);
 
 // Validar usuario (ya lo tenías)
 router.get("/validate-user/:id", validateUserById);
+
+router.get("/students-by-teacher/:teacherId", listStudentsByTeacher);
 
 export default router;

@@ -6,8 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Dashboard Profesor</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
-    integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
-  <link rel="stylesheet" href="profesor.css">
+    crossorigin="anonymous">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
 </head>
 
@@ -19,38 +18,43 @@
         <a class="navbar-brand fw-bold fs-3" href="#"><i class="bi bi-mortarboard"></i> EduVid</a>
         <h6 class="font-monospace text-center mt-3 fst-italic">Profesor</h6>
         <div class="collapse navbar-collapse d-flex flex-row-reverse" id="navbarNav">
-
           <ul class="navbar-nav">
-            <li class="nav-item"><a class="nav-link active" href="./profesor.html">Mis Cursos</a></li>
-            <li class="nav-item"><a class="nav-link" href="./mis-estudiantes/mis-estudiantes.html">Mis Estudiantes</a>
-            </li>
-            <!-- <li class="nav-item"><a class="nav-link" href="./certificados/certificados.html">Certificados</a></li> -->
-            <li class="nav-item"><a class="nav-link fw-bold" href="../login/login.html">Cerrar sesión</a></li>
+            <li class="nav-item"><a class="nav-link" href="../profesor.html">Mis Cursos</a></li>
+            <li class="nav-item"><a class="nav-link active" href="./mis-estudiantes.html">Mis Estudiantes</a></li>
+            <!-- <li class="nav-item"><a class="nav-link" href="../certificados/certificados.html">Certificados</a></li> -->
+            <li class="nav-item"><a class="nav-link fw-bold" href="../../login/login.html">Cerrar sesión</a></li>
           </ul>
         </div>
       </div>
     </nav>
   </header>
 
-  <div class="container">
-
+  <div class="container mt-5">
     <div class="text-center font-monospace m-3">
-      <h6 class="text-body-tertiary">MIS CURSOS</h6>
+      <h6 class="text-body-tertiary">MIS ESTUDIANTES</h6>
     </div>
     <hr>
-
-    <!-- Spinner (oculto al inicio con d-none) -->
-    <div id="spinner" class="d-none justify-content-center my-5">
-      <div class="spinner-border text-success" role="status">
-        <span class="visually-hidden">Loading...</span>
-      </div>
+    <!-- Tabla de estudiantes -->
+    <div class="table-responsive">
+      <table class="table table-striped table-hover align-middle text-center" id="studentsTable">
+        <thead class="table-dark">
+          <tr>
+            <th>#</th>
+            <th>Email</th>
+            <th>Rol</th>
+            <th>Curso</th>
+            <th>Categoría</th>
+            <th>Fecha de Inscripción</th>
+          </tr>
+        </thead>
+        <tbody id="studentsBody">
+          <tr>
+            <td colspan="6">Cargando estudiantes...</td>
+          </tr>
+        </tbody>
+      </table>
     </div>
-
-
-    <!-- Contenedor de cursos -->
-    <div id="coursesContainer" class="row justify-content-center"></div>
-
-    <!-- Paginación -->
+     <!-- Paginación -->
     <div class="d-flex justify-content-center align-content-center align-items-center pt-4">
       <nav aria-label="Page navigation example">
         <ul class="pagination justify-content-center gap-1">
@@ -61,13 +65,11 @@
       </nav>
     </div>
     <hr>
-
-
   </div>
 
-  <script src="profesor.js"></script>
+  <script src="mis-estudiantes.js"></script>
+
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
-    integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
     crossorigin="anonymous"></script>
 </body>
 

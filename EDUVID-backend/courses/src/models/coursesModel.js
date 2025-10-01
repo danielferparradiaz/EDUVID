@@ -39,7 +39,7 @@ const Course = sequelize.define("courses", {
   },
   updatedAt: {
     type: DataTypes.DATE,
-    allowNull: false,
+    allowNull: true,
     field: "updated_at"
   }
 }, {

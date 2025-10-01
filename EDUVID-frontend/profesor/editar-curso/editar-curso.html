@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard Profesor</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+  <link rel="stylesheet" href="editar-curso.css">
+  <script src="editar-curso.js"></script>
+</head>
+
+<body>
+
+  <header>
+    <nav class="navbar navbar-expand-lg bg-body-tertiary">
+      <div class="container-fluid justify-content-center">
+        <a class="navbar-brand fw-bold fs-3" href="#"><i class="bi bi-mortarboard"></i> EduVid</a>
+        <h6 class="font-monospace text-center mt-3 fst-italic">Profesor</h6>
+        <div class="collapse navbar-collapse d-flex flex-row-reverse" id="navbarNav">
+          <ul class="navbar-nav">
+            <li class="nav-item">
+              <a class="nav-link active" aria-current="page" href="../profesor.html">Mis Cursos</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#">Mis Estudiantes</a>
+            </li>
+            <!-- <li class="nav-item">
+              <a class="nav-link" href="#">Certificados</a>
+            </li> -->
+            <li class="nav-item">
+              <a class="nav-link fw-bold" href="../../login/login.html">Cerrar sesión</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+  </header>
+
+  <div class="d-flex flex-column h-75 justify-content-center align-content-center align-items-center">
+    <div class="text-center font-monospace mt-1">
+      <h6 class="text-body-tertiary">Editar Curso</h6>
+    </div>
+    <div class="text-center my-2">
+      <h4 class="text-body-secondary">
+        <span id="tab-curso" class="tab fw-bold text-primary" style="cursor:pointer">Curso</span> |
+        <span id="tab-leccion" class="tab" style="cursor:pointer">Lecciones</span>
+      </h4>
+    </div>
+
+    <div class="border p-4 border-secondary border-1 rounded bg-info bg-opacity-10 ">
+
+      <!-- Spinner -->
+      <div id="spinner" class="d-flex justify-content-center my-3">
+        <div class="spinner-border text-primary" role="status">
+          <span class="visually-hidden">Cargando...</span>
+        </div>
+      </div>
+
+      <!-- Formulario Curso -->
+      <form id="form-editar-curso" class="row g-3 needs-validation d-none" novalidate>
+        <div class="col-md-6">
+          <label class="form-label">Nombre</label>
+          <input type="text" class="form-control" id="nombre" required>
+        </div>
+        <div class="col-md-6">
+          <label class="form-label">Categoría</label>
+          <input type="text" class="form-control" id="category" required>
+        </div>
+        <div class="col-md-12">
+          <label class="form-label">Descripción</label>
+          <textarea class="form-control" id="descripcion" rows="3" required></textarea>
+        </div>
+        <div class="col-md-12">
+          <label class="form-label">URL del Video</label>
+          <input type="text" class="form-control" id="videoUrl">
+        </div>
+        <div class="col-12 d-flex justify-content-between">
+          <button type="button" id="btn-eliminar" class="btn btn-outline-danger">Eliminar</button>
+          <button type="button" id="btn-guardar" class="btn btn-outline-success">Guardar</button>
+        </div>
+      </form>
+
+      <!-- Formulario Lección -->
+      <!-- Formulario Lección -->
+      <form id="form-leccion" class="row g-3 d-none">
+        <!-- Nombre del curso -->
+        <div class="col-12 mb-3">
+          <h4 class="fw-bold text-dark">
+            Curso: <span id="curso-nombre-lecciones" class="text-primary"></span>
+          </h4>
+          <p class="text-muted">Administra las lecciones de este curso</p>
+          <hr>
+        </div>
+
+        <!-- Crear nueva lección -->
+        <div class="col-12">
+          <div class="card shadow-sm border-0 mb-4">
+            <div class="card-body">
+              <h5 class="card-title text-secondary">➕ Agregar nueva lección</h5>
+              <div class="row g-3">
+                <div class="col-md-9">
+                  <input type="text" class="form-control" id="lesson-title" placeholder="Título de la lección" required>
+                </div>
+                <div class="col-md-3 d-flex justify-content-end">
+                  <button type="button" id="btn-guardar-leccion" class="btn btn-success w-100">
+                    <i class="bi bi-plus-circle"></i> Guardar
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Listado de lecciones -->
+        <div class="col-12">
+          <h5 class="fw-bold text-dark mb-3">📋 Lecciones creadas</h5>
+          <div id="lista-lecciones" class="row g-3">
+            <!-- Aquí se insertan dinámicamente las tarjetas de cada lección -->
+          </div>
+        </div>
+      </form>
+
+
+
+    </div>
+
+
+
+
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
+    crossorigin="anonymous"></script>
+</body>
+
+</html>

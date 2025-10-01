@@ -1,4 +1,5 @@
-import { Eureka } from "eureka-js-client";
+// certificates/src/config/eureka.js
+const { Eureka } = require("eureka-js-client");
 
 const eurekaClient = new Eureka({
   instance: {
@@ -6,7 +7,7 @@ const eurekaClient = new Eureka({
     hostName: "localhost",
     ipAddr: "127.0.0.1",
     port: {
-      $: 8085,
+      $: 8097,
       "@enabled": true,
     },
     vipAddress: "CERTIFICATES-SERVICE",
@@ -30,4 +31,4 @@ eurekaClient.start((error) => {
   }
 });
 
-export default eurekaClient;
+module.exports = eurekaClient;

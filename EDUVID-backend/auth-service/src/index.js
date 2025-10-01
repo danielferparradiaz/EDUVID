@@ -19,7 +19,7 @@ app.use(cors({
 app.use(express.json());
 
 // Rutas
-app.use("/api", authRoutes);
+app.use("/auth", authRoutes);
 
 // Iniciar servidor
 const PORT = process.env.PORT || 9000;
