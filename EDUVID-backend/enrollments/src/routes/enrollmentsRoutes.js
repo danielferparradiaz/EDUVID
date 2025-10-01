@@ -3,7 +3,7 @@ import { enrollUser, validateEnrollment } from "../controllers/enrollmentsContro
 
 const router = Router();
 
-// Middleware de log de entrada a la ruta
+// Middleware de log
 router.use((req, res, next) => {
   console.log(`➡️ [EnrollmentsRouter] ${req.method} ${req.originalUrl}`);
   if (req.body && Object.keys(req.body).length > 0) {
@@ -12,14 +12,11 @@ router.use((req, res, next) => {
   next();
 });
 
-router.post("/enrollUser", (req, res, next) => {
-  console.log("🚀 [EnrollmentsRouter] POST /enrollUser invocado");
-  next();
-}, enrollUser);
+// 👉 Crear una inscripción
 
-router.get("/validate-enroll/:userId/:courseId", (req, res, next) => {
-  console.log("🚀 [EnrollmentsRouter] GET /validate-enroll invocado con params:", req.params);
-  next();
-}, validateEnrollment);
+router.post("/enroll", enrollUser);
+
+// 👉 Validar si un usuario está inscrito en un curso
+router.get("/validate/:userId/:courseId", validateEnrollment);
 
 export default router;
