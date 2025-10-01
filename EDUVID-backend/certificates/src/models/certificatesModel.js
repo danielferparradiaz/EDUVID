@@ -7,45 +7,30 @@
 // - getCertificatesByUser
 // - getCertificateContentById
 // ------------------------------
-
 import { DataTypes } from "sequelize";
-import sequelize from "./db.js"; // tu instancia sequelize
+import sequelize from "../config/db.js";  // importa la instancia creada
 
-const Certificate = sequelize.define(
-  "Certificate",
-  {
-    id: {
-      type: DataTypes.INTEGER,
-      autoIncrement: true,
-      primaryKey: true,
-    },
-    userId: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-    },
-    courseId: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-    },
-    file_url: {
-      type: DataTypes.STRING(255),
-      allowNull: true,
-    },
-    content: {
-      type: DataTypes.TEXT("long"), // HTML puede ser grande
-      allowNull: true,
-    },
-    issuedAt: {
-      type: DataTypes.DATE,
-      allowNull: false,
-      defaultValue: DataTypes.NOW,
-    },
+const Certificate = sequelize.define("Certificate", {
+  id: {
+    type: DataTypes.INTEGER,
+    autoIncrement: true,
+    primaryKey: true,
   },
-  {
-    tableName: "certificates",
-    timestamps: false, // ya usamos issuedAt manual
-  }
-);
+  studentName: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+  courseName: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+  issueDate: {
+    type: DataTypes.DATE,
+    allowNull: false,
+  },
+});
+
+export default Certificate;
 
 // ------------------------------
 // Funciones utilitarias
