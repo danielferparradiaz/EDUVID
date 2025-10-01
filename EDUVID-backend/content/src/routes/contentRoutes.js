@@ -20,4 +20,11 @@ router.get("/:id", (req, res, next) => {
   next();
 }, contentController.getLessonById);
 
+
+// Editar
+router.put("/:id", contentController.updateLesson);
+
+// Eliminar
+router.delete("/:id", contentController.deleteLesson);
+
 module.exports = router;

@@ -38,6 +38,7 @@ export const login = async (req, res) => {
 
 
 export const register = async (req, res) => {
+
   try {
     const { email, password, rol } = req.body;
 
