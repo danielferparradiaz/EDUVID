@@ -8,7 +8,6 @@ document.addEventListener("DOMContentLoaded", async () => {
   const btnGuardarCurso = document.getElementById("btn-guardar");
   const btnEliminarCurso = document.getElementById("btn-eliminar");
   const btnGuardarLeccion = document.getElementById("btn-guardar-leccion");
-  const btnEliminarLeccion = document.getElementById("btn-eliminar-leccion");
 
   const params = new URLSearchParams(window.location.search);
   const cursoId = params.get("id");
@@ -88,20 +87,20 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 
 
-  async function eliminarLeccion(lessonId) {
-    if (!confirm("¿Eliminar esta lección?")) return;
+ window.eliminarLeccion = async function(lessonId) {
+  if (!confirm("¿Eliminar esta lección?")) return;
 
-    const res = await fetch(`http://localhost:5003/lessons/${lessonId}`, {
-      method: "DELETE",
-      headers: { "Authorization": `Bearer ${token}` }
-    });
+  const res = await fetch(`http://localhost:5003/lessons/${lessonId}`, {
+    method: "DELETE",
+    headers: { "Authorization": `Bearer ${token}` }
+  });
 
-    if (!res.ok) return alert("Error eliminando lección");
-    alert("🗑️ Lección eliminada correctamente");
+  if (!res.ok) return alert("Error eliminando lección");
+  alert("🗑️ Lección eliminada correctamente");
 
-    // recargar listado
-    cargarLecciones(cursoId, token);
-  }
+  cargarLecciones(cursoId, token);
+}
+
 
 
   // 📌 Guardar curso
@@ -153,19 +152,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     cargarLecciones(cursoId, token);
   });
 
-  // 📌 Eliminar lección (ejemplo: deberías pasar el id de la lección)
-  btnEliminarLeccion.addEventListener("click", async () => {
-    const lessonId = prompt("Ingrese el ID de la lección a eliminar:");
-    if (!lessonId) return;
-
-    const res = await fetch(`http://localhost:5003/lessons/${lessonId}`, {
-      method: "DELETE",
-      headers: { "Authorization": `Bearer ${token}` }
-    });
-
-    if (!res.ok) return alert("Error eliminando lección");
-    alert("🗑️ Lección eliminada correctamente");
-  });
 });
 
 
@@ -178,28 +164,28 @@ function renderLecciones(lecciones) {
     div.className = "col-12";
 
     div.innerHTML = `
-      <div class="card shadow-sm border-0">
+       <div class="card shadow-sm border-0">
         <div class="card-body d-flex justify-content-between align-items-center">
-          <div id="leccion-view-${l.id}" class="w-100 d-flex justify-content-between align-items-center">
+          <div id="leccion-view-${l.lessonId}" class="w-100 d-flex justify-content-between align-items-center">
             <h6 class="fw-bold mb-0">Lección ${i + 1}: ${l.title}</h6>
             <div>
-              <button class="btn btn-sm btn-outline-primary me-2" onclick="editarLeccion(${l.id}, '${l.title}')">
+              <button class="btn btn-sm btn-outline-primary me-2" onclick="editarLeccion(${l.lessonId}, '${l.title}')">
                 <i class="bi bi-pencil"></i>
               </button>
-              <button class="btn btn-sm btn-outline-danger" onclick="eliminarLeccion(${l.id})">
+              <button class="btn btn-sm btn-outline-danger" onclick="eliminarLeccion(${l.lessonId})">
                 <i class="bi bi-trash"></i>
               </button>
             </div>
           </div>
 
           <!-- Vista edición oculta -->
-          <div id="leccion-edit-${l.id}" class="d-none w-100">
+          <div id="leccion-edit-${l.lessonId}" class="d-none w-100">
             <div class="d-flex justify-content-between align-items-center">
-              <input type="text" id="edit-input-${l.id}" class="form-control me-2" value="${l.title}">
-              <button class="btn btn-success btn-sm" onclick="guardarEdicion(${l.id})">
+              <input type="text" id="edit-input-${l.lessonId}" class="form-control me-2" value="${l.title}">
+              <button class="btn btn-success btn-sm" onclick="guardarEdicion(${l.lessonId})">
                 <i class="bi bi-check2"></i> Guardar
               </button>
-              <button class="btn btn-secondary btn-sm ms-2" onclick="cancelarEdicion(${l.id})">
+              <button class="btn btn-secondary btn-sm ms-2" onclick="cancelarEdicion(${l.lessonId})">
                 Cancelar
               </button>
             </div>
@@ -212,35 +198,44 @@ function renderLecciones(lecciones) {
 }
 
 // Lógica editar
-function editarLeccion(id, title) {
+window.editarLeccion = function(id, title) {
   document.getElementById(`leccion-view-${id}`).classList.add("d-none");
   document.getElementById(`leccion-edit-${id}`).classList.remove("d-none");
 }
 
-function cancelarEdicion(id) {
+window.cancelarEdicion = function(id) {
   document.getElementById(`leccion-view-${id}`).classList.remove("d-none");
   document.getElementById(`leccion-edit-${id}`).classList.add("d-none");
 }
 
-function guardarEdicion(id) {
-  const nuevoTitulo = document.getElementById(`edit-input-${id}`).value;
+window.guardarEdicion = async function(id) {
+  try {
+    const nuevoTitulo = document.getElementById(`edit-input-${id}`).value;
 
-  fetch(`http://localhost:5003/lessons/${id}`, {
-    method: "PUT",
-    headers: { 
-      "Content-Type": "application/json", 
-      // "Authorization": `Bearer ${localStorage.getItem("jwt")}` 
-    },
-    body: JSON.stringify({ title: nuevoTitulo })
-  })
-  .then(res => {
+    const res = await fetch(`http://localhost:5003/lessons/${id}`, {
+      method: "PUT",
+      headers: { 
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${localStorage.getItem("jwt")}` // <-- vuelve a ponerlo
+      },
+      body: JSON.stringify({ title: nuevoTitulo })
+    });
+
     if (!res.ok) throw new Error("Error al actualizar");
-    return res.json();
-  })
-  .then(() => {
-    alert("Lección actualizada ✅");
-    cargarLecciones(cursoId, localStorage.getItem("jwt")); // refresca lista
-  })
-  .catch(() => alert("Error al actualizar la lección ❌"));
+
+    // ✅ lee la respuesta y úsala
+    const updated = await res.json();
+    console.log("✅ Lección actualizada:", updated);
+
+    alert("✅ Lección actualizada correctamente");
+    await cargarLecciones(cursoId, localStorage.getItem("jwt"));
+
+  } catch (err) {
+    console.error("❌ Error en guardarEdicion:", err);
+    alert("Error al actualizar la lección ❌");
+  }
 }
+
+
+
 

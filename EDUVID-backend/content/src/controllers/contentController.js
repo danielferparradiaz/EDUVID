@@ -52,3 +52,48 @@ exports.getLessonById = async (req, res) => {
     res.status(500).json({ message: "Error al obtener la lección" });
   }
 };
+
+
+// Editar lección
+exports.updateLesson = async (req, res) => {
+  try {
+    const { id } = req.params;
+    console.log("📥 [updateLesson] Params recibidos:", req.params);
+    console.log("📥 [updateLesson] Body recibido:", req.body);
+
+    const updated = await contentModel.updateLesson(parseInt(id), req.body);
+
+    if (!updated) {
+      console.warn(`⚠️ [updateLesson] Lección con ID ${id} no encontrada`);
+      return res.status(404).json({ message: "Lesson not found" });
+    }
+
+    console.log("✅ [updateLesson] Lección actualizada:", updated);
+    res.json(updated);
+  } catch (error) {
+    console.error("❌ [updateLesson] Error al actualizar lección:", error);
+    res.status(500).json({ message: "Error al actualizar la lección" });
+  }
+};
+
+// Eliminar lección
+exports.deleteLesson = async (req, res) => {
+  try {
+    const { id } = req.params;
+    console.log("📥 [deleteLesson] Params recibidos:", req.params);
+
+    const deleted = await contentModel.deleteLesson(parseInt(id));
+
+    if (!deleted) {
+      console.warn(`⚠️ [deleteLesson] Lección con ID ${id} no encontrada`);
+      return res.status(404).json({ message: "Lesson not found" });
+    }
+
+    console.log("✅ [deleteLesson] Lección eliminada:", deleted);
+    res.json({ message: "Lesson deleted" });
+  } catch (error) {
+    console.error("❌ [deleteLesson] Error al eliminar lección:", error);
+    res.status(500).json({ message: "Error al eliminar la lección" });
+  }
+};
+
