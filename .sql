@@ -1,3 +1,7 @@
+DROP DATABASE IF EXISTS eduvid;
+CREATE DATABASE eduvid;
+USE eduvid;
+
 CREATE TABLE usuarios (
     id INT AUTO_INCREMENT PRIMARY KEY,
     email VARCHAR(100) NOT NULL UNIQUE,
@@ -69,11 +73,11 @@ INSERT INTO usuarios (id, email, password, rol, creado_en) VALUES
 
 -- Cursos
 INSERT INTO courses (id, teacher_id, title, description, video_url, category, created_at, updated_at) VALUES
-(1, 1, 'Introducción a Node.js',   'Curso básico de Node.js con Express',             'https://example.com/video1', 'Programación',    '2025-09-23 16:42:09', '2025-09-23 16:42:09'),
-(2, 2, 'Fundamentos de Redes',     'Curso introductorio sobre redes de computadoras', 'https://example.com/video2', 'Infraestructura', '2025-09-23 16:42:09', '2025-09-23 16:42:09'),
-(3, 1, 'Bases de Datos con MySQL', 'Curso sobre modelado y consultas SQL',            'https://example.com/video3', 'Bases de Datos',  '2025-09-23 16:42:09', '2025-09-23 16:42:09'),
-(4, 3, 'Seguridad Informática',    'Principios de ciberseguridad y buenas prácticas', 'https://example.com/video4', 'Seguridad',       '2025-09-23 16:42:09', '2025-09-23 16:42:09'),
-(5, 2, 'Angular Avanzado',         'Componentes, servicios y RxJS en Angular',        'https://example.com/video5', 'Frontend',        '2025-09-23 16:42:09', '2025-09-23 16:42:09');
+(1, 1, 'Introducción a Node.js',   'Curso básico de Node.js con Express',             'https://aulasenvivo.com/wp-content/uploads/2020/06/videoclasesgrabadas.jpg', 'Programación',    '2025-09-23 16:42:09', '2025-09-23 16:42:09'),
+(2, 2, 'Fundamentos de Redes',     'Curso introductorio sobre redes de computadoras', 'https://aulasenvivo.com/wp-content/uploads/2020/06/videoclasesgrabadas.jpg', 'Infraestructura', '2025-09-23 16:42:09', '2025-09-23 16:42:09'),
+(3, 1, 'Bases de Datos con MySQL', 'Curso sobre modelado y consultas SQL',            'https://aulasenvivo.com/wp-content/uploads/2020/06/videoclasesgrabadas.jpg', 'Bases de Datos',  '2025-09-23 16:42:09', '2025-09-23 16:42:09'),
+(4, 3, 'Seguridad Informática',    'Principios de ciberseguridad y buenas prácticas', 'https://aulasenvivo.com/wp-content/uploads/2020/06/videoclasesgrabadas.jpg', 'Seguridad',       '2025-09-23 16:42:09', '2025-09-23 16:42:09'),
+(5, 2, 'Angular Avanzado',         'Componentes, servicios y RxJS en Angular',        'https://aulasenvivo.com/wp-content/uploads/2020/06/videoclasesgrabadas.jpg', 'Frontend',        '2025-09-23 16:42:09', '2025-09-23 16:42:09');
 
 -- Lecciones
 INSERT INTO lessons (lessonId, courseId, title) VALUES

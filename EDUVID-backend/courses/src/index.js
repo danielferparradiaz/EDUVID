@@ -5,9 +5,6 @@ import eurekaClient from "./config/eureka.js";
 import morgan from "morgan";
 import cors from "cors";
 
-
-
-
 dotenv.config();
 
 
