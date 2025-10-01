@@ -1,0 +1,35 @@
+version: "3.9"
+services:
+
+user-service:
+  build: ./EDUVID-backend/user-service
+  container_name: user-service
+  ports:
+    - "8092:8092"
+  env_file:
+    - ./EDUVID-backend/user-service/.env
+  networks:
+    - eduvid-net
+
+
+  # eureka:
+  #   build: ./EDUVID-backend/eduvid-eureka
+  #   container_name: eureka
+  #   ports:
+  #     - "8761:8761"
+  #   networks:
+  #     - eduvid-net
+
+  # frontend:
+  #   build: ./EDUVID-frontend
+  #   container_name: eduvid-frontend
+  #   ports:
+  #     - "3000:80"
+  #   depends_on:
+  #     - gateway
+  #   networks:
+  #     - eduvid-net
+
+networks:
+  eduvid-net:
+    driver: bridge
