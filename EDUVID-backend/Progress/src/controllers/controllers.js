@@ -21,13 +21,22 @@ export const completeLesson = async (req, res) => {
     let progressRecord = await progress.findOne({ where: { userId, courseId } });
 
     if (!progressRecord) {
+      const totalLessons = await Lesson.count({ where: { courseId } });
+
+      let pct = 0;
+      if (totalLessons > 0) {
+        pct = (1 / totalLessons) * 100;  // ya completó la primera lección
+      }
+
       progressRecord = await progress.create({
         userId,
         courseId,
         completedLessons: JSON.stringify([lessonId]),
-        percentage: 0,
+        percentage: pct,
       });
-    } else {
+    }
+
+    else {
       let lessons = Array.isArray(progressRecord.completedLessons)
         ? progressRecord.completedLessons
         : JSON.parse(progressRecord.completedLessons || "[]");

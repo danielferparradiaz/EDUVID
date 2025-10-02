@@ -1,9 +1,19 @@
 import express from "express";
 import { Eureka } from "eureka-js-client";
 import { createProxyMiddleware } from "http-proxy-middleware";
+import morgan from "morgan";
+import cors from "cors";
 
 const app = express();
 const PORT = process.env.PORT || 8080;
+
+
+app.use(morgan("dev"));
+app.use(cors({
+  origin: ["http://127.0.0.1:5500", "http://localhost:5500"],
+  methods: ["GET", "POST", "PUT", "DELETE"],
+  allowedHeaders: ["Content-Type", "Authorization"],
+}));
 
 // 👉 Configuración Eureka Client
 const eureka = new Eureka({
@@ -61,8 +71,8 @@ app.use("/progress", (req, res, next) => {
   return createProxyMiddleware({ target, changeOrigin: true })(req, res, next);
 });
 
-app.use("/enrollments", (req, res, next) => {
-  const target = getServiceUrl("ENROLLMENTS-SERVICE");
+app.use("/enrollment", (req, res, next) => {
+  const target = getServiceUrl("ENROLLMENT-SERVICE");
   if (!target) return res.status(500).send("Enrollments Service not available");
   return createProxyMiddleware({ target, changeOrigin: true })(req, res, next);
 });

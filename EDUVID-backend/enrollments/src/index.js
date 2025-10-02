@@ -11,10 +11,11 @@ const app = express();
 
 app.use(morgan("dev"));
 app.use(cors({
-  origin: "http://127.0.0.1:5500",
+  origin: ["http://127.0.0.1:5500", "http://localhost:5500"],
   methods: ["GET", "POST", "PUT", "DELETE"],
   allowedHeaders: ["Content-Type", "Authorization"],
 }));
+
 
 app.use(express.json());
 
@@ -24,7 +25,7 @@ app.use("/api", enrollmentRoutes);
 const PORT = process.env.PORT || 8088;
 app.listen(PORT, async () => {
   try {
-    console.log(`Course-service corriendo en http://localhost:${PORT}`);
+    console.log(`enrollment-service corriendo en http://localhost:${PORT}`);
 ß
   } catch (err) {
     console.error("❌ Error al conectar con DB:", err);

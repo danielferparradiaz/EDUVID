@@ -91,6 +91,3 @@ INSERT INTO enrollment (id, studentId, instructorId, courseId, enrollmentDateSta
 (2, 1, 1, 2, '2025-09-25 02:52:09', NULL),
 (3, 1, 1, 3, '2025-09-26 07:00:47', NULL);
 
--- Progress (solo válidos)
-INSERT INTO progress (userId, courseId, completedLessons, percentage) VALUES
-(2, 1, JSON_ARRAY(2,3,1), 100);

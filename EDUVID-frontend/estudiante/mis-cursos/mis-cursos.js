@@ -1,4 +1,18 @@
-const studentId = 2; // Simulación de estudiante logueado
+function getUserFromToken() {
+  const token = localStorage.getItem("jwt");
+  if (!token) return null;
+
+  try {
+    const payload = JSON.parse(atob(token.split(".")[1]));
+    return payload; // { id, email, rol, iat, exp }
+  } catch (err) {
+    console.error("Error decodificando JWT:", err);
+    return null;
+  }
+}
+
+const user = getUserFromToken();
+const studentId = user.id; // Simulación de estudiante logueado
 const coursesContainer = document.getElementById("courses-container");
 const spinner = document.getElementById("spinner");
 

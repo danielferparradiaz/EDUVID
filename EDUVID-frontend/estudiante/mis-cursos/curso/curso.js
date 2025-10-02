@@ -1,25 +1,20 @@
 const urlParams = new URLSearchParams(window.location.search);
-const courseId = urlParams.get("id");      // viene de ?id=...
-const studentId = urlParams.get("student"); // ahora viene también en la URL
+const courseId = urlParams.get("id");      
+const studentId = urlParams.get("student"); 
 
 console.log("🔎 Parámetros recibidos -> courseId:", courseId, "studentId:", studentId);
 
-
-
 const courseInfo = document.getElementById("course-info");
 const lessonsList = document.getElementById("lessons-list");
+const certButton = document.querySelector("button.btn-outline-primary");
+
+let selectedLessons = []; // guardamos el estado de las lecciones seleccionadas
 
 async function loadCourse() {
   try {
-    console.log("🔎 Iniciando carga del curso. courseId:", courseId, "studentId:", studentId);
-
     // 1. Datos del curso
-    console.log(`➡️ Fetch curso: http://localhost:8095/api/info-curso/${courseId}`);
-    const res = await fetch(`http://localhost:8095/api/info-curso/${courseId}`);
-    console.log("✅ Response curso status:", res.status);
-    const courseText = await res.text();
-    console.log("📦 Raw curso response:", courseText);
-    const course = JSON.parse(courseText);
+    const res = await fetch(`http://localhost:8080/courses/api/info-curso/${courseId}`);
+    const course = await res.json();
 
     courseInfo.innerHTML = `
       <div class="card shadow-sm">
@@ -30,28 +25,20 @@ async function loadCourse() {
       </div>
     `;
 
-    // 2. Obtener lecciones del curso
-    const lessonRes = await fetch(`http://localhost:5003/lessons?courseId=${courseId}`);
-    console.log("✅ Response lessons status:", lessonRes.status);
-    const lessonsText = await lessonRes.text();
-    console.log("📦 Raw lessons response:", lessonsText);
-    const lessons = JSON.parse(lessonsText);
+    // 2. Lecciones
+    const lessonRes = await fetch(`http://localhost:8080/content/lessons?courseId=${courseId}`);
+    const lessons = await lessonRes.json();
 
-    // 3. Obtener progreso del estudiante en este curso
-    console.log(`➡️ Fetch progreso: http://localhost:8097/api/${studentId}/${courseId}`);
-    const progRes = await fetch(`http://localhost:8097/api/${studentId}/${courseId}`);
-    console.log("✅ Response progreso status:", progRes.status);
-    const progressText = await progRes.text();
-    console.log("📦 Raw progreso response:", progressText);
-    const progress = JSON.parse(progressText);
-
+    // 3. Progreso actual
+    const progRes = await fetch(`http://localhost:8080/progress/api/${studentId}/${courseId}`);
+    const progress = await progRes.json();
     const completedLessons = progress?.completedLessons || [];
 
     // 4. Renderizar lista de lecciones
     lessonsList.innerHTML = lessons.map(lesson => `
       <li class="list-group-item d-flex justify-content-between align-items-center">
         <div>
-          <input type="checkbox" class="form-check-input me-2" 
+          <input type="checkbox" class="form-check-input me-2 lesson-checkbox" 
             data-lesson-id="${lesson.lessonId}"
             ${completedLessons.includes(lesson.lessonId) ? "checked" : ""}>
           ${lesson.title}
@@ -62,24 +49,21 @@ async function loadCourse() {
       </li>
     `).join("");
 
-    // 5. Manejar clicks en los checkboxes
-    document.querySelectorAll("input[type=checkbox]").forEach(cb => {
-      cb.addEventListener("change", async (e) => {
-        const lessonId = e.target.getAttribute("data-lesson-id");
-        const completed = e.target.checked;
+    // Inicializar estado
+    selectedLessons = [...completedLessons];
 
-        console.log(`📌 Lección ${lessonId} marcada como ${completed ? "completada" : "pendiente"}`);
-
-        try {
-          const updateRes = await fetch("http://localhost:8097/api/progress/update", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ studentId, courseId, lessonId, completed })
-          });
-          console.log("✅ Update progreso status:", updateRes.status);
-        } catch (err) {
-          console.error("❌ Error al actualizar progreso", err);
+    // Manejar checkboxes
+    document.querySelectorAll(".lesson-checkbox").forEach(cb => {
+      cb.addEventListener("change", (e) => {
+        const lessonId = Number(e.target.getAttribute("data-lesson-id"));
+        if (e.target.checked) {
+          if (!selectedLessons.includes(lessonId)) {
+            selectedLessons.push(lessonId);
+          }
+        } else {
+          selectedLessons = selectedLessons.filter(l => l !== lessonId);
         }
+        console.log("✅ Estado actual de selectedLessons:", selectedLessons);
       });
     });
 
@@ -88,5 +72,33 @@ async function loadCourse() {
     courseInfo.innerHTML = `<p class="text-danger">Error cargando curso.</p>`;
   }
 }
+
+// 🔹 Enviar progreso al backend cuando se pida certificado
+certButton.addEventListener("click", async () => {
+  try {
+    console.log("📩 Enviando progreso al backend...");
+
+    for (const lessonId of selectedLessons) {
+      const resp = await fetch("http://localhost:8080/progress/api/complete-lesson", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ 
+          userId: Number(studentId), 
+          courseId: Number(courseId), 
+          lessonId 
+        })
+      });
+
+      console.log(`➡️ POST lessonId=${lessonId} status:`, resp.status);
+      const data = await resp.json();
+      console.log("📦 Respuesta:", data);
+    }
+
+    alert("✅ Progreso guardado. Si terminaste el curso, se generará tu certificado automáticamente.");
+  } catch (err) {
+    console.error("❌ Error enviando progreso:", err);
+    alert("Error al registrar el progreso");
+  }
+});
 
 loadCourse();
