@@ -1,7 +1,8 @@
 import { Router } from "express";
 import { crearCurso, listar, infoCurso, actualizarCurso, eliminarCurso, 
   validateIfCourseExistById, listarByprofesorId,
-  recomendationForStudent
+  recomendationForStudent,
+  listarByEstudianteId,
 } from "../controllers/coursesController.js";
 
 const router = Router();
@@ -23,5 +24,8 @@ router.put("/actualizar-curso/:id", actualizarCurso);
 router.delete("/eliminar-curso/:id", eliminarCurso);
 router.get("/validate-course/:id", validateIfCourseExistById);
 router.get("/recomendacion", recomendationForStudent);
+router.get("/listarByStudentId/:id", listarByEstudianteId);
+
+
 
 export default router;

@@ -142,7 +142,7 @@ document.addEventListener("DOMContentLoaded", () => {
         payload.rol = rol;
         payload.password = password;
 
-        const res = await fetch("http://localhost:9000/api/register", {
+        const res = await fetch("http://localhost:9000/auth/register", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(payload),
@@ -158,7 +158,7 @@ document.addEventListener("DOMContentLoaded", () => {
       }
 
       if (mode === "forgot") {
-        const res = await fetch("http://localhost:9000/api/forgot", {
+        const res = await fetch("http://localhost:9000/auth/forgot", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(payload),

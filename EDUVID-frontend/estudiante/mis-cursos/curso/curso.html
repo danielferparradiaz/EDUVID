@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Curso - Estudiante</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+</head>
+
+<body>
+  <!-- Navbar -->
+  <header>
+    <nav class="navbar navbar-expand-lg bg-body-tertiary shadow-sm">
+      <div class="container-fluid">
+        <a class="navbar-brand fw-bold fs-3" href="#"><i class="bi bi-mortarboard"></i> EduVid</a>
+        <div class="collapse navbar-collapse d-flex flex-row-reverse">
+          <ul class="navbar-nav">
+            <li class="nav-item"><a class="nav-link" href="../../../estudiante/estudiante.html">Explorar</a></li>
+            <li class="nav-item"><a class="nav-link active fw-bold" href="#">Mis cursos</a></li>
+            <li class="nav-item"><a class="nav-link" href="../../../login/login.html">Cerrar sesión</a></li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+  </header>
+
+  <!-- Contenedor principal -->
+  <div class="container my-4 mt-2">
+    <div class="text-center font-monospace m-3">
+      <h6 class="text-body-secondary">Continuar curso</h6>
+    </div>
+    <hr>
+
+    <div id="course-info" class="mb-4 mt-4"></div>
+
+    <h5 class="fw-bold mb-3">Lecciones</h5>
+    <ul id="lessons-list" class="list-group"></ul>
+    
+    <div class="d-flex justify-content-center mt-4">
+      <button class="btn btn-sm btn-outline-primary">
+        Solicitar certificado
+      </button>
+    </div>
+    <hr>
+  </div>
+
+
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="./curso.js"></script>
+    <footer>
+    <div class="text-center p-3 bg-body-tertiary">
+      © 2024 EduVid. Todos los derechos reservados.
+    </div>
+  </footer>
+</body>
+
+</html>

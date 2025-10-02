@@ -1,9 +1,9 @@
 import express from "express";
-import enrollmentRoutes from "./routes/enrollmentsRoutes.js";
 import dotenv from "dotenv";
 import eurekaClient from "./config/eureka.js";
 import morgan from "morgan";
 import cors from "cors";
+import enrollmentRoutes from "./routes/enrollmentsRoutes.js";
 
 dotenv.config();
 
@@ -30,3 +30,6 @@ app.listen(PORT, async () => {
     console.error("❌ Error al conectar con DB:", err);
   }
 });
+
+
+

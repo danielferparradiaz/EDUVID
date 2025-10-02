@@ -79,6 +79,7 @@ export const infoCurso = async (req, res) => {
   }
 };
 
+
 /**
  * Actualizar un curso
  */
@@ -115,6 +116,7 @@ export const actualizarCurso = async (req, res) => {
   }
 };
 
+
 /**
  * Eliminar un curso
  */
@@ -143,6 +145,7 @@ export const eliminarCurso = async (req, res) => {
     return res.status(500).json({ error: "Error en el servidor" });
   }
 };
+
 
 /**
  * Validar existencia de curso por ID
@@ -256,6 +259,45 @@ export const getLessonsByCourseId = async (courseId) => {
   }
 };
 
+/**
+ * Listar cursos por estudiante (studentId)
+ */
+export const listarByEstudianteId = async (req, res) => {
+  try {
+    const { id } = req.params; // id del estudiante
+    console.log("📥 [listarByEstudianteId] Params recibidos:", { id });
+
+    // 1. Buscar inscripciones del estudiante
+    const enrollmentServiceUrl = getServiceUrl("CONTENT-SERVICE"); // o si manejas el enrollment aquí mismo
+    console.log(`📡 [listarByEstudianteId] Consultando enrollment para estudiante: ${id}`);
+
+    // Si enrollment está en esta misma BD:
+    const [results] = await Course.sequelize.query(
+      `SELECT c.* 
+       FROM enrollment e
+       INNER JOIN courses c ON e.courseId = c.id
+       WHERE e.studentId = :studentId`,
+      {
+        replacements: { studentId: id },
+        type: Course.sequelize.QueryTypes.SELECT
+      }
+    );
+
+    if (!results || results.length === 0) {
+      console.warn("⚠️ [listarByEstudianteId] No se encontraron cursos para el estudiante:", id);
+      return res.status(404).json({ error: "No se encontraron cursos para este estudiante" });
+    }
+
+    console.log(`✅ [listarByEstudianteId] Cursos encontrados: ${results.length}`);
+    return res.json(results);
+
+  } catch (error) {
+    console.error("❌ [listarByEstudianteId] Error:", error);
+    return res.status(500).json({ error: "Error en el servidor" });
+  }
+};
+
+
 
 // 🔎 Función auxiliar: obtener URL de un servicio
 function getServiceUrl(appName) {
@@ -272,3 +314,7 @@ function getServiceUrl(appName) {
   console.log(`✅ [getServiceUrl] URL construida para ${appName}: ${url}`);
   return url;
 }
+
+
+
+
