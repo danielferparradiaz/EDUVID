@@ -17,4 +17,4 @@ COPY . .
 EXPOSE 8097
 
 # 🚀 Comando de inicio
-CMD ["node", "src/JS/index.js"]
+CMD ["node", "src/index.js"]
