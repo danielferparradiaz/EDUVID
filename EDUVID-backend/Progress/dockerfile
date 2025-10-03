@@ -1,0 +1,20 @@
+# 🐳 Imagen base ligera con Node.js
+FROM node:18-slim
+
+# 📁 Crear directorio de trabajo
+WORKDIR /app
+
+# 📦 Copiar archivos de dependencias
+COPY package*.json ./
+
+# 📦 Instalar dependencias
+RUN npm install --production
+
+# 📁 Copiar el resto del código fuente
+COPY . .
+
+# 🌐 Exponer el puerto definido en .env
+EXPOSE 8097
+
+# 🚀 Comando de inicio
+CMD ["node", "src/JS/index.js"]
