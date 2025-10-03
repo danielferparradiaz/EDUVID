@@ -21,13 +21,22 @@ export const completeLesson = async (req, res) => {
     let progressRecord = await progress.findOne({ where: { userId, courseId } });
 
     if (!progressRecord) {
+      const totalLessons = await Lesson.count({ where: { courseId } });
+
+      let pct = 0;
+      if (totalLessons > 0) {
+        pct = (1 / totalLessons) * 100;  // ya completó la primera lección
+      }
+
       progressRecord = await progress.create({
         userId,
         courseId,
         completedLessons: JSON.stringify([lessonId]),
-        percentage: 0,
+        percentage: pct,
       });
-    } else {
+    }
+
+    else {
       let lessons = Array.isArray(progressRecord.completedLessons)
         ? progressRecord.completedLessons
         : JSON.parse(progressRecord.completedLessons || "[]");
@@ -76,20 +85,20 @@ export const completeLesson = async (req, res) => {
   }
 };
 
-export const getprogress = async (req, res) => {
+export const getProgress = async (req, res) => {
   try {
-    const { userId, courseId } = req.query;
-    if (!userId || !courseId) {
-      return res.status(400).json({ error: "Faltan parámetros userId o courseId" });
+    const { studentId, courseId } = req.params;
+    if (!studentId || !courseId) {
+      return res.status(400).json({ error: "Faltan parámetros studentId o courseId" });
     }
 
-    const progress = await progress.findOne({
-      where: { userId: Number(userId), courseId: Number(courseId) },
+    const prog = await progress.findOne({
+      where: { userId: Number(studentId), courseId: Number(courseId) },
     });
 
-    res.json(progress || { completedLessons: [], percentage: 0 });
+    res.json(prog || { completedLessons: [], percentage: 0 });
   } catch (err) {
-    console.error(err);
+    console.error("❌ Error en getProgress:", err);
     res.status(500).json({ error: "Error al obtener el progreso" });
   }
 };
@@ -174,6 +183,24 @@ export const validatePercent = async (percentage) => {
 
 
 
+export const listProgressByStudent = async (req, res) => {
+  try {
+    const { studentId } = req.params;
+    if (!studentId) {
+      return res.status(400).json({ error: "Falta parámetro studentId" });
+    }
+
+    const records = await progress.findAll({ where: { userId: Number(studentId) } });
+
+    res.json(records || []);
+  } catch (err) {
+    console.error("❌ Error en listProgressByStudent:", err);
+    res.status(500).json({ error: "Error al obtener los progresos" });
+  }
+};
+
+
+
 // 🔎 Helper para obtener la URL de un microservicio desde Eureka
 function getServiceUrl(appName) {
   const instances = eurekaClient.getInstancesByAppId(appName);
@@ -183,4 +210,7 @@ function getServiceUrl(appName) {
   const instance = instances[0];
   return `http://${instance.hostName}:${instance.port.$}`;
 }
+
+
+
 

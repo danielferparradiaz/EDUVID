@@ -22,7 +22,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
   }
 
-  // Renderizar cursos por página
+  // 🔹 Renderizar cursos por página
   function renderCursos(page) {
     container.innerHTML = "";
 
@@ -41,31 +41,30 @@ document.addEventListener("DOMContentLoaded", async () => {
       const card = document.createElement("div");
       card.className = "col-md-4 mt-3";
       card.innerHTML = `
-    <div class="card border-secondary shadow-sm h-100">
-      <img src="https://aulasenvivo.com/wp-content/uploads/2020/06/videoclasesgrabadas.jpg"
-           class="card-img-top rounded-top" 
-           alt="Imagen curso" style="height: 150px; object-fit: cover;">
-      <div class="card-body text-center">
-        <h5 class="card-title text-uppercase fw-bold">${curso.nombre}</h5>
-        <p class="card-text text-muted">${curso.descripcion}</p>
-        <span class="badge bg-primary">${curso.category}</span>
-      </div>
-      <div class="card-footer text-center">
-        <a type="button" class="btn btn-outline-primary btn-sm" 
-           href="./editar-curso/editar-curso.html?id=${curso.id}">
-          Editar Curso
-        </a>
-      </div>
-    </div>
-  `;
+        <div class="card border-secondary shadow-sm h-100">
+          <img src="https://aulasenvivo.com/wp-content/uploads/2020/06/videoclasesgrabadas.jpg"
+               class="card-img-top rounded-top" 
+               alt="Imagen curso" style="height: 150px; object-fit: cover;">
+          <div class="card-body text-center">
+            <h5 class="card-title text-uppercase fw-bold">${curso.nombre}</h5>
+            <p class="card-text text-muted">${curso.descripcion}</p>
+            <span class="badge bg-primary">${curso.category}</span>
+          </div>
+          <div class="card-footer text-center">
+            <a type="button" class="btn btn-outline-primary btn-sm" 
+               href="./editar-curso/editar-curso.html?id=${curso.id}">
+              Editar Curso
+            </a>
+          </div>
+        </div>
+      `;
       container.appendChild(card);
     });
-
 
     renderPagination();
   }
 
-  // Renderizar paginación
+  // 🔹 Renderizar paginación
   function renderPagination() {
     const totalPages = Math.ceil(cursos.length / itemsPerPage);
     const prevBtn = pagination.querySelector(".prev");
@@ -106,17 +105,30 @@ document.addEventListener("DOMContentLoaded", async () => {
     };
   }
 
-  // Estado vacío con formulario embebido
+  // 🔹 Estado vacío con formulario embebido
   function renderEmptyState() {
     container.innerHTML = `
-    <div id="emptyStateBlock" class="text-center my-5">
-      <h5 class="text-info-emphasis fw-bold">Aún no tienes cursos creados.</h5>
-      <p class="text-muted">¡Crea tu primer curso y empieza a enseñar!</p>
-      <button id="showFormBtn" class="btn btn-success btn-lg">
-        + Crear Curso
-      </button>
-    </div>
-    <div id="createFormContainer" class="mt-4 d-none">
+      <div id="emptyStateBlock" class="text-center my-5">
+        <h5 class="text-info-emphasis fw-bold">Aún no tienes cursos creados.</h5>
+        <p class="text-muted">¡Crea tu primer curso y empieza a enseñar!</p>
+        <button id="showFormBtn" class="btn btn-success btn-lg">
+          + Crear Curso
+        </button>
+      </div>
+      <div id="createFormContainer" class="mt-4 d-none"></div>
+    `;
+
+    document.getElementById("showFormBtn").addEventListener("click", () => {
+      showCreateForm();
+      document.getElementById("emptyStateBlock").classList.add("d-none");
+    });
+  }
+
+  // 🔹 Mostrar formulario (se usa tanto en vacío como con el botón +)
+  function showCreateForm() {
+    if (document.getElementById("createCourseForm")) return; // evitar duplicados
+
+    const formHTML = `
       <div class="card shadow-sm">
         <div class="card-body">
           <h5 class="card-title">Nuevo Curso</h5>
@@ -139,20 +151,30 @@ document.addEventListener("DOMContentLoaded", async () => {
             </div>
             <div class="col-12 text-end">
               <button type="submit" class="btn btn-primary">Guardar</button>
+              <button type="button" id="cancelFormBtn" class="btn btn-secondary ms-2">Cancelar</button>
             </div>
           </form>
         </div>
       </div>
-    </div>
-  `;
+    `;
 
-    // 👉 Al dar clic, ocultamos el bloque y mostramos el formulario
-    document.getElementById("showFormBtn").addEventListener("click", () => {
-      document.getElementById("emptyStateBlock").classList.add("d-none");
-      document.getElementById("createFormContainer").classList.remove("d-none");
+    // Si está el emptyState, usar su contenedor
+    let formContainer = document.getElementById("createFormContainer");
+    if (!formContainer) {
+      formContainer = document.createElement("div");
+      formContainer.id = "createFormContainer";
+      formContainer.className = "mt-4";
+      container.insertAdjacentElement("afterbegin", formContainer);
+    }
+
+    formContainer.innerHTML = formHTML;
+
+    // Cancelar formulario
+    document.getElementById("cancelFormBtn").addEventListener("click", () => {
+      formContainer.remove();
     });
 
-    // 👉 Enviar formulario
+    // Enviar formulario
     document.getElementById("createCourseForm").addEventListener("submit", async (e) => {
       e.preventDefault();
 
@@ -171,7 +193,6 @@ document.addEventListener("DOMContentLoaded", async () => {
         });
 
         const result = await res.json();
-
         if (!res.ok) throw new Error(result.error || "Error al crear curso");
 
         alert("✅ Curso creado correctamente");
@@ -183,8 +204,15 @@ document.addEventListener("DOMContentLoaded", async () => {
     });
   }
 
+  // 🔹 Botón + en el header
+  const addCourseBtn = document.getElementById("addCourseBtn");
+  if (addCourseBtn) {
+    addCourseBtn.addEventListener("click", () => {
+      showCreateForm();
+    });
+  }
 
-  // Cargar cursos al inicio
+  // 🔹 Cargar cursos al inicio
   try {
     spinner.classList.remove("d-none");
     spinner.classList.add("d-flex");

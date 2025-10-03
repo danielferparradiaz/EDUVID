@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { enrollUser, validateEnrollment } from "../controllers/enrollmentsController.js";
+import { enrollUser, validateEnrollment, getEnrollmentsByStudent } from "../controllers/enrollmentsController.js";
 
 const router = Router();
 
@@ -12,11 +12,21 @@ router.use((req, res, next) => {
   next();
 });
 
-// 👉 Crear una inscripción
+// Inscribir estudiante en un curso
+router.post("/enrollUser", (req, res, next) => {
+  console.log("🚀 [EnrollmentsRouter] POST /enrollUser invocado");
+  next();
+}, enrollUser);
 
-router.post("/enroll", enrollUser);
+// Validar si un estudiante está inscrito en un curso
+router.get("/validate-enroll/:userId/:courseId", (req, res, next) => {
+  console.log("🚀 [EnrollmentsRouter] GET /validate-enroll invocado con params:", req.params);
+  next();
+}, validateEnrollment);
 
-// 👉 Validar si un usuario está inscrito en un curso
-router.get("/validate/:userId/:courseId", validateEnrollment);
+router.get("/by-student/:studentId", (req, res, next) => {
+  console.log("🚀 [EnrollmentsRouter] GET /by-student invocado con params:", req.params);
+  next();
+}, getEnrollmentsByStudent);
 
 export default router;
