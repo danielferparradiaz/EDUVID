@@ -1,4 +1,7 @@
 import Course from "../models/coursesModel.js";
+import eurekaClient from "../config/eureka.js"; 
+import axios from "axios";
+
 
 /**
  * Crear un nuevo curso
@@ -76,6 +79,7 @@ export const infoCurso = async (req, res) => {
   }
 };
 
+
 /**
  * Actualizar un curso
  */
@@ -112,6 +116,7 @@ export const actualizarCurso = async (req, res) => {
   }
 };
 
+
 /**
  * Eliminar un curso
  */
@@ -140,6 +145,7 @@ export const eliminarCurso = async (req, res) => {
     return res.status(500).json({ error: "Error en el servidor" });
   }
 };
+
 
 /**
  * Validar existencia de curso por ID
@@ -194,6 +200,120 @@ export const listarByprofesorId = async (req, res) => {
     return res.status(500).json({ error: "Error en el servidor" });
   }
 };
+
+/**
+ * recomendacion de curso para estudiante (incluye lecciones)
+ */
+export const recomendationForStudent = async (req, res) => {
+  try {
+    const cursos = await Course.findAll();
+
+    if (!cursos || cursos.length === 0) {
+      return res.status(404).json({ error: "No hay cursos disponibles" });
+    }
+
+    const cursosConLecciones = [];
+    for (const curso of cursos) {
+      const lecciones = await getLessonsByCourseId(curso.id);
+      if (lecciones && lecciones.length > 0) {
+        cursosConLecciones.push({
+          ...curso.toJSON(),
+          lessons: lecciones,
+        });
+      }
+    }
+
+    if (cursosConLecciones.length === 0) {
+      return res.status(404).json({ error: "No hay cursos con lecciones disponibles" });
+    }
+
+    const randomIndex = Math.floor(Math.random() * cursosConLecciones.length);
+    const recomendacion = cursosConLecciones[randomIndex];
+
+    return res.json(recomendacion);
+
+  } catch (error) {
+    console.error("❌ [recomendationForStudent] Error:", error);
+    return res.status(500).json({ error: "Error en el servidor" });
+  }
+};
+
+
+// Traer las lecciones del curso
+export const getLessonsByCourseId = async (courseId) => {
+  try {
+    const contentServiceUrl = getServiceUrl("CONTENT-SERVICE");
+    console.log(`📡 [getLessonByCourse] Consultando: ${contentServiceUrl}/lessons?courseId=${courseId}`);
+
+    const { data } = await axios.get(`${contentServiceUrl}/lessons?courseId=${courseId}`);
+    console.log("📥 [getLessonByCourse] Respuesta:", data);
+
+    if (Array.isArray(data) && data.length > 0) {
+      console.log("✅ [getLessonByCourse] Lecciones encontradas");
+      return data;
+    }
+    return [];
+  } catch (error) {
+    console.error("❌ [getLessonByCourse] Error:", error.message);
+    return [];
+  }
+};
+
+/**
+ * Listar cursos por estudiante (studentId)
+ */
+export const listarByEstudianteId = async (req, res) => {
+  try {
+    const { id } = req.params; // id del estudiante
+    console.log("📥 [listarByEstudianteId] Params recibidos:", { id });
+
+    // 1. Buscar inscripciones del estudiante
+    const enrollmentServiceUrl = getServiceUrl("CONTENT-SERVICE"); // o si manejas el enrollment aquí mismo
+    console.log(`📡 [listarByEstudianteId] Consultando enrollment para estudiante: ${id}`);
+
+    // Si enrollment está en esta misma BD:
+    const [results] = await Course.sequelize.query(
+      `SELECT c.* 
+       FROM enrollment e
+       INNER JOIN courses c ON e.courseId = c.id
+       WHERE e.studentId = :studentId`,
+      {
+        replacements: { studentId: id },
+        type: Course.sequelize.QueryTypes.SELECT
+      }
+    );
+
+    if (!results || results.length === 0) {
+      console.warn("⚠️ [listarByEstudianteId] No se encontraron cursos para el estudiante:", id);
+      return res.status(404).json({ error: "No se encontraron cursos para este estudiante" });
+    }
+
+    console.log(`✅ [listarByEstudianteId] Cursos encontrados: ${results.length}`);
+    return res.json(results);
+
+  } catch (error) {
+    console.error("❌ [listarByEstudianteId] Error:", error);
+    return res.status(500).json({ error: "Error en el servidor" });
+  }
+};
+
+
+
+// 🔎 Función auxiliar: obtener URL de un servicio
+function getServiceUrl(appName) {
+  console.log(`🌍 [getServiceUrl] Buscando instancias para: ${appName}`);
+  const instances = eurekaClient.getInstancesByAppId(appName);
+  console.log(`[getServiceUrl] Instancias encontradas:`, instances);
+
+  if (!instances || instances.length === 0) {
+    throw new Error(`❌ No hay instancias para ${appName}`);
+  }
+
+  const instance = instances[0];
+  const url = `http://${instance.hostName}:${instance.port.$}`;
+  console.log(`✅ [getServiceUrl] URL construida para ${appName}: ${url}`);
+  return url;
+}
 
 
 

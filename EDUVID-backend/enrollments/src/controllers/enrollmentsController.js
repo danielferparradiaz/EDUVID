@@ -136,3 +136,26 @@ export const validateEnrollment = async (req, res) => {
     return res.status(500).json({ exists: false, message: "Error interno del servidor" });
   }
 };
+
+
+/**
+ * Listar todas las inscripciones de un estudiante
+ */
+export const getEnrollmentsByStudent = async (req, res) => {
+  try {
+    const { studentId } = req.params;
+    console.log("📥 [getEnrollmentsByStudent] Student ID:", studentId);
+
+    const enrollments = await Enrollment.findAll({ where: { studentId } });
+
+    if (!enrollments.length) {
+      return res.status(404).json({ message: "El estudiante no está inscrito en ningún curso" });
+    }
+
+    return res.json(enrollments);
+
+  } catch (error) {
+    console.error("❌ [getEnrollmentsByStudent] Error:", error);
+    return res.status(500).json({ error: "Error al obtener inscripciones" });
+  }
+};
