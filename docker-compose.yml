@@ -8,6 +8,7 @@ services:
       - "8761:8761"
     networks:
       - eduvid-net
+    restart: always
 
   user-service:
     build: ./EDUVID-backend/user-service
@@ -20,6 +21,7 @@ services:
       - eureka
     networks:
       - eduvid-net
+    restart: always
 
   certificates-service:
     build: ./EDUVID-backend/certificates
@@ -32,6 +34,7 @@ services:
       - eureka
     networks:
       - eduvid-net
+    restart: always
 
   content-service:
     build: ./EDUVID-backend/content
@@ -44,6 +47,7 @@ services:
       - eureka
     networks:
       - eduvid-net
+    restart: always
 
   courses-service:
     build: ./EDUVID-backend/courses
@@ -56,6 +60,7 @@ services:
       - eureka
     networks:
       - eduvid-net
+    restart: always
 
   enrollments-service:
     build: ./EDUVID-backend/enrollments
@@ -68,6 +73,7 @@ services:
       - eureka
     networks:
       - eduvid-net
+    restart: always
 
   progress-service:
     build: ./EDUVID-backend/progress
@@ -80,6 +86,7 @@ services:
       - eureka
     networks:
       - eduvid-net
+    restart: always
 
   gateway:
     build: ./EDUVID-backend/gateway
@@ -92,6 +99,7 @@ services:
       - eureka
     networks:
       - eduvid-net
+    restart: always
 
 networks:
   eduvid-net:
