@@ -6,13 +6,23 @@ services:
     container_name: eureka
     ports:
       - "8761:8761"
-    networks:
-      - eduvid-net
-    restart: always
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8761/actuator/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
     environment:
+      - SPRING_APPLICATION_NAME=eduvid-eureka
+      - SERVER_PORT=8761
+      - SERVER_ADDRESS=0.0.0.0
       - EUREKA_INSTANCE_HOSTNAME=eureka
       - EUREKA_CLIENT_REGISTER_WITH_EUREKA=false
       - EUREKA_CLIENT_FETCH_REGISTRY=false
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka:8761/eureka/
+    networks:
+      - eduvid-net
+    restart: always
+
 
   user-service:
     build: ./EDUVID-backend/user-service
@@ -27,7 +37,8 @@ services:
       - EUREKA_PORT=8761
       - APP_NAME=USER-SERVICE
     depends_on:
-      - eureka
+      eureka:
+          condition: service_healthy
     networks:
       - eduvid-net
     restart: always
@@ -45,7 +56,8 @@ services:
       - EUREKA_PORT=8761
       - APP_NAME=CERTIFICATES-SERVICE
     depends_on:
-      - eureka
+      eureka:
+          condition: service_healthy
     networks:
       - eduvid-net
     restart: always
@@ -63,7 +75,8 @@ services:
       - EUREKA_PORT=8761
       - APP_NAME=CONTENT-SERVICE
     depends_on:
-      - eureka
+      eureka:
+          condition: service_healthy
     networks:
       - eduvid-net
     restart: always
@@ -81,7 +94,8 @@ services:
       - EUREKA_PORT=8761
       - APP_NAME=COURSES-SERVICE
     depends_on:
-      - eureka
+      eureka:
+          condition: service_healthy
     networks:
       - eduvid-net
     restart: always
@@ -99,7 +113,8 @@ services:
       - EUREKA_PORT=8761
       - APP_NAME=ENROLLMENT-SERVICE
     depends_on:
-      - eureka
+      eureka:
+          condition: service_healthy
     networks:
       - eduvid-net
     restart: always
@@ -117,7 +132,8 @@ services:
       - EUREKA_PORT=8761
       - APP_NAME=PROGRESS-SERVICE
     depends_on:
-      - eureka
+      eureka:
+          condition: service_healthy
     networks:
       - eduvid-net
     restart: always
@@ -135,7 +151,8 @@ services:
       - EUREKA_PORT=8761
       - APP_NAME=GATEWAY
     depends_on:
-      - eureka
+      eureka:
+          condition: service_healthy
     networks:
       - eduvid-net
     restart: always
