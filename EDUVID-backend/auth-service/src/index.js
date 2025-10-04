@@ -12,7 +12,9 @@ const app = express();
 // Middlewares
 app.use(morgan("dev"));
 app.use(cors({
-  origin: "http://127.0.0.1:5500",
+  origin: [
+    "http://eduvid.local",  // el frontend servido desde tu DNS
+  ],
   methods: ["GET", "POST", "PUT", "DELETE"],
   allowedHeaders: ["Content-Type", "Authorization"],
 }));
@@ -23,12 +25,15 @@ app.use("/auth", authRoutes);
 
 // Iniciar servidor
 const PORT = process.env.PORT || 9000;
-app.listen(PORT, async () => {
+const HOST = "0.0.0.0"; // 👈 habilita conexiones externas
+
+app.listen(PORT, HOST, async () => {
   try {
     await sequelize.authenticate();
     console.log("✅ Conexión MySQL exitosa");
-    console.log(`🚀 Auth-service corriendo en http://localhost:${PORT}`);
+    console.log(`🚀 Auth-service corriendo en http://${HOST}:${PORT}`);
   } catch (err) {
     console.error("❌ Error al conectar con DB:", err);
   }
 });
+

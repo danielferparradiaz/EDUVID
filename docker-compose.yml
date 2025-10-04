@@ -1,34 +1,97 @@
 version: "3.9"
 services:
 
-user-service:
-  build: ./EDUVID-backend/user-service
-  container_name: user-service
-  ports:
-    - "8092:8092"
-  env_file:
-    - ./EDUVID-backend/user-service/.env
-  networks:
-    - eduvid-net
+  eureka:
+    build: ./EDUVID-backend/eduvid-eureka
+    container_name: eureka
+    ports:
+      - "8761:8761"
+    networks:
+      - eduvid-net
 
+  user-service:
+    build: ./EDUVID-backend/user-service
+    container_name: user-service
+    ports:
+      - "8092:8092"
+    env_file:
+      - ./EDUVID-backend/user-service/.env
+    depends_on:
+      - eureka
+    networks:
+      - eduvid-net
 
-  # eureka:
-  #   build: ./EDUVID-backend/eduvid-eureka
-  #   container_name: eureka
-  #   ports:
-  #     - "8761:8761"
-  #   networks:
-  #     - eduvid-net
+  certificates-service:
+    build: ./EDUVID-backend/certificates
+    container_name: certificates-service
+    ports:
+      - "8085:8085"
+    env_file:
+      - ./EDUVID-backend/certificates/.env
+    depends_on:
+      - eureka
+    networks:
+      - eduvid-net
 
-  # frontend:
-  #   build: ./EDUVID-frontend
-  #   container_name: eduvid-frontend
-  #   ports:
-  #     - "3000:80"
-  #   depends_on:
-  #     - gateway
-  #   networks:
-  #     - eduvid-net
+  content-service:
+    build: ./EDUVID-backend/content
+    container_name: content-service
+    ports:
+      - "5003:5003"
+    env_file:
+      - ./EDUVID-backend/content/.env
+    depends_on:
+      - eureka
+    networks:
+      - eduvid-net
+
+  courses-service:
+    build: ./EDUVID-backend/courses
+    container_name: courses-service
+    ports:
+      - "8095:8095"
+    env_file:
+      - ./EDUVID-backend/courses/.env
+    depends_on:
+      - eureka
+    networks:
+      - eduvid-net
+
+  enrollments-service:
+    build: ./EDUVID-backend/enrollments
+    container_name: enrollments-service
+    ports:
+      - "8088:8088"
+    env_file:
+      - ./EDUVID-backend/enrollments/.env
+    depends_on:
+      - eureka
+    networks:
+      - eduvid-net
+
+  progress-service:
+    build: ./EDUVID-backend/progress
+    container_name: progress-service
+    ports:
+      - "8097:8097"
+    env_file:
+      - ./EDUVID-backend/progress/.env
+    depends_on:
+      - eureka
+    networks:
+      - eduvid-net
+
+  gateway:
+    build: ./EDUVID-backend/gateway
+    container_name: gateway
+    ports:
+      - "8080:8080"
+    env_file:
+      - ./EDUVID-backend/gateway/.env
+    depends_on:
+      - eureka
+    networks:
+      - eduvid-net
 
 networks:
   eduvid-net:

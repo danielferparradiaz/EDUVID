@@ -1,0 +1,14 @@
+# Imagen base con JDK 17
+FROM eclipse-temurin:17-jdk-alpine
+
+# Directorio de trabajo
+WORKDIR /app
+
+# Copiar el jar compilado
+COPY target/eduvid-eureka-0.0.1-SNAPSHOT.jar app.jar
+
+# Exponer el puerto de Eureka
+EXPOSE 8761
+
+# Comando de inicio
+ENTRYPOINT ["java", "-jar", "app.jar"]
