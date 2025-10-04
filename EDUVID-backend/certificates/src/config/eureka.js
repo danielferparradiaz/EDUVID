@@ -1,13 +1,13 @@
-// certificates/src/config/eureka.js
 const { Eureka } = require("eureka-js-client");
 
 const eurekaClient = new Eureka({
   instance: {
     app: "CERTIFICATES-SERVICE",
-    hostName: "localhost",
-    ipAddr: "127.0.0.1",
+    hostName: "certificates-service", // 👈 nombre del servicio en docker-compose
+    ipAddr: "certificates-service",   // 👈 igual que arriba
+    preferIpAddress: true,
     port: {
-      $: 8097,
+      $: 8085, // 👈 asegúrate de usar el puerto EXPUESTO en tu Dockerfile
       "@enabled": true,
     },
     vipAddress: "CERTIFICATES-SERVICE",
@@ -17,7 +17,7 @@ const eurekaClient = new Eureka({
     },
   },
   eureka: {
-    host: "localhost",
+    host: "eureka",       // 👈 nombre del servicio de Eureka en docker-compose
     port: 8761,
     servicePath: "/eureka/apps/",
   },

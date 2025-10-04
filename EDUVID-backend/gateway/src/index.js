@@ -18,18 +18,19 @@ app.use(cors({
 // 👉 Configuración Eureka Client
 const eureka = new Eureka({
   instance: {
-    app: "gateway-service",
-    hostName: "localhost",
-    ipAddr: "127.0.0.1",
+    app: "gateway",
+    hostName: "gateway",
+    ipAddr: "gateway",
+    preferIpAddress: true,
     port: { "$": PORT, "@enabled": true },
-    vipAddress: "gateway-service",
+    vipAddress: "gateway",
     dataCenterInfo: {
       "@class": "com.netflix.appinfo.InstanceInfo$DefaultDataCenterInfo",
       name: "MyOwn",
     },
   },
   eureka: {
-    host: "localhost",
+    host: "eureka",
     port: 8761,
     servicePath: "/eureka/apps/",
   },

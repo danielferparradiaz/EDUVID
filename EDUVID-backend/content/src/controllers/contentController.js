@@ -1,7 +1,7 @@
-const contentModel = require("../models/contentModel");
+import { contentModel } from "../models/contentModel.js";
 
 // Crear lección
-exports.createLesson = async (req, res) => {
+export const createLesson = async (req, res) => {
   try {
     console.log("📥 [createLesson] Request body recibido:", req.body);
 
@@ -17,7 +17,7 @@ exports.createLesson = async (req, res) => {
 };
 
 // Listar lecciones por curso
-exports.getLessonsByCourse = async (req, res) => {
+export const getLessonsByCourse = async (req, res) => {
   try {
     const { courseId } = req.query;
     console.log("📥 [getLessonsByCourse] Query params recibidos:", req.query);
@@ -33,7 +33,7 @@ exports.getLessonsByCourse = async (req, res) => {
 };
 
 // Obtener detalle de una lección
-exports.getLessonById = async (req, res) => {
+export const getLessonById = async (req, res) => {
   try {
     const { id } = req.params;
     console.log("📥 [getLessonById] Params recibidos:", req.params);
@@ -53,9 +53,8 @@ exports.getLessonById = async (req, res) => {
   }
 };
 
-
 // Editar lección
-exports.updateLesson = async (req, res) => {
+export const updateLesson = async (req, res) => {
   try {
     const { id } = req.params;
     console.log("📥 [updateLesson] Params recibidos:", req.params);
@@ -77,7 +76,7 @@ exports.updateLesson = async (req, res) => {
 };
 
 // Eliminar lección
-exports.deleteLesson = async (req, res) => {
+export const deleteLesson = async (req, res) => {
   try {
     const { id } = req.params;
     console.log("📥 [deleteLesson] Params recibidos:", req.params);
@@ -96,4 +95,3 @@ exports.deleteLesson = async (req, res) => {
     res.status(500).json({ message: "Error al eliminar la lección" });
   }
 };
-

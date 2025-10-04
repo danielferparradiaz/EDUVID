@@ -9,6 +9,10 @@ services:
     networks:
       - eduvid-net
     restart: always
+    environment:
+      - EUREKA_INSTANCE_HOSTNAME=eureka
+      - EUREKA_CLIENT_REGISTER_WITH_EUREKA=false
+      - EUREKA_CLIENT_FETCH_REGISTRY=false
 
   user-service:
     build: ./EDUVID-backend/user-service
@@ -17,6 +21,11 @@ services:
       - "8092:8092"
     env_file:
       - ./EDUVID-backend/user-service/.env
+    environment:
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka:8761/eureka/
+      - EUREKA_HOST=eureka
+      - EUREKA_PORT=8761
+      - APP_NAME=USER-SERVICE
     depends_on:
       - eureka
     networks:
@@ -30,6 +39,11 @@ services:
       - "8085:8085"
     env_file:
       - ./EDUVID-backend/certificates/.env
+    environment:
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka:8761/eureka/
+      - EUREKA_HOST=eureka
+      - EUREKA_PORT=8761
+      - APP_NAME=CERTIFICATES-SERVICE
     depends_on:
       - eureka
     networks:
@@ -43,6 +57,11 @@ services:
       - "5003:5003"
     env_file:
       - ./EDUVID-backend/content/.env
+    environment:
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka:8761/eureka/
+      - EUREKA_HOST=eureka
+      - EUREKA_PORT=8761
+      - APP_NAME=CONTENT-SERVICE
     depends_on:
       - eureka
     networks:
@@ -56,6 +75,11 @@ services:
       - "8095:8095"
     env_file:
       - ./EDUVID-backend/courses/.env
+    environment:
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka:8761/eureka/
+      - EUREKA_HOST=eureka
+      - EUREKA_PORT=8761
+      - APP_NAME=COURSES-SERVICE
     depends_on:
       - eureka
     networks:
@@ -69,6 +93,11 @@ services:
       - "8088:8088"
     env_file:
       - ./EDUVID-backend/enrollments/.env
+    environment:
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka:8761/eureka/
+      - EUREKA_HOST=eureka
+      - EUREKA_PORT=8761
+      - APP_NAME=ENROLLMENT-SERVICE
     depends_on:
       - eureka
     networks:
@@ -82,6 +111,11 @@ services:
       - "8097:8097"
     env_file:
       - ./EDUVID-backend/progress/.env
+    environment:
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka:8761/eureka/
+      - EUREKA_HOST=eureka
+      - EUREKA_PORT=8761
+      - APP_NAME=PROGRESS-SERVICE
     depends_on:
       - eureka
     networks:
@@ -95,6 +129,11 @@ services:
       - "8080:8080"
     env_file:
       - ./EDUVID-backend/gateway/.env
+    environment:
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka:8761/eureka/
+      - EUREKA_HOST=eureka
+      - EUREKA_PORT=8761
+      - APP_NAME=GATEWAY
     depends_on:
       - eureka
     networks:

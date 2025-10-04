@@ -3,8 +3,9 @@ import { Eureka } from "eureka-js-client";
 const eurekaClient = new Eureka({
   instance: {
     app: "CONTENT-SERVICE",
-    hostName: "localhost",
-    ipAddr: "127.0.0.1",
+    hostName: "content-service",
+    ipAddr: "content-service",
+    preferIpAddress: true,
     port: {
       $: 5003,
       "@enabled": true,
@@ -16,7 +17,7 @@ const eurekaClient = new Eureka({
     },
   },
   eureka: {
-    host: "localhost",
+    host: "eureka",
     port: 8761,
     servicePath: "/eureka/apps/",
   },

@@ -1,14 +1,9 @@
 // src/models/certificatesModel.js
 // ------------------------------
 // Modelo de datos para la tabla `certificates` usando Sequelize.
-// Incluye funciones atómicas y reutilizables:
-// - createCertificate
-// - updateCertificateContent
-// - getCertificatesByUser
-// - getCertificateContentById
 // ------------------------------
-import { DataTypes } from "sequelize";
-import sequelize from "../config/db.js"; // tu instancia sequelize
+const { DataTypes } = require("sequelize");
+const sequelize = require("../config/db.js"); // tu instancia sequelize
 
 const Certificate = sequelize.define("Certificate", {
   id: {
@@ -30,24 +25,20 @@ const Certificate = sequelize.define("Certificate", {
   },
 });
 
-export default Certificate;
-
 // ------------------------------
 // Funciones utilitarias
 // ------------------------------
 
 /**
  * Inserta un certificado.
- * @returns {Object} registro creado
  */
 async function createCertificate(userId, courseId, fileUrl = null, content = null) {
   const cert = await Certificate.create({ userId, courseId, file_url: fileUrl, content });
-  return cert.id; // 👈 solo retornamos el número
+  return cert.id;
 }
 
-
 /**
- * Actualiza file_url y content (HTML) del certificado.
+ * Actualiza file_url y content.
  */
 async function updateCertificateContent(id, fileUrl, content) {
   const cert = await Certificate.findByPk(id);
@@ -59,7 +50,7 @@ async function updateCertificateContent(id, fileUrl, content) {
 }
 
 /**
- * Lista metadatos de certificados de un usuario.
+ * Lista certificados de un usuario.
  */
 async function getCertificatesByUser(userId) {
   return await Certificate.findAll({
@@ -70,7 +61,7 @@ async function getCertificatesByUser(userId) {
 }
 
 /**
- * Trae el registro completo (incluye content).
+ * Trae un certificado completo.
  */
 async function getCertificateContentById(id) {
   return await Certificate.findByPk(id, {
@@ -78,7 +69,8 @@ async function getCertificateContentById(id) {
   });
 }
 
-export {
+// Exportar en CommonJS
+module.exports = {
   Certificate,
   createCertificate,
   updateCertificateContent,
