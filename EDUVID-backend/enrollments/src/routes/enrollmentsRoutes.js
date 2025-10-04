@@ -3,7 +3,7 @@ import { enrollUser, validateEnrollment, getEnrollmentsByStudent } from "../cont
 
 const router = Router();
 
-// Middleware de log de entrada a la ruta
+// Middleware de log
 router.use((req, res, next) => {
   console.log(`➡️ [EnrollmentsRouter] ${req.method} ${req.originalUrl}`);
   if (req.body && Object.keys(req.body).length > 0) {
