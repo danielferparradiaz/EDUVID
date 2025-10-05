@@ -1,8 +1,9 @@
-require("dotenv").config();
-const express = require("express");
-const contentRoutes = require("./routes/contentRoutes");
-const eureka = require("./config/eureka"); 
-const cors = require("cors");
+import dotenv from "dotenv";
+import express from "express";
+import cors from "cors";
+
+import contentRoutes from "./routes/contentRoutes.js";
+import eureka from "./config/eureka.js"; 
 
 const app = express();
 app.use(express.json());

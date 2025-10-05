@@ -3,8 +3,9 @@ import { Eureka } from "eureka-js-client";
 const eurekaClient = new Eureka({
   instance: {
     app: "PROGRESS-SERVICE",
-    hostName: "localhost",
-    ipAddr: "127.0.0.1",
+    hostName: "progress-service",
+    ipAddr: "progress-service",
+    preferIpAddress: true,
     port: {
       $: 8097,
       "@enabled": true,
@@ -16,7 +17,7 @@ const eurekaClient = new Eureka({
     },
   },
   eureka: {
-    host: "localhost",
+    host: "eureka",
     port: 8761,
     servicePath: "/eureka/apps/",
   },

@@ -1,34 +1,161 @@
 version: "3.9"
 services:
 
-user-service:
-  build: ./EDUVID-backend/user-service
-  container_name: user-service
-  ports:
-    - "8092:8092"
-  env_file:
-    - ./EDUVID-backend/user-service/.env
-  networks:
-    - eduvid-net
+  eureka:
+    build: ./EDUVID-backend/eduvid-eureka
+    container_name: eureka
+    ports:
+      - "8761:8761"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8761/actuator/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    environment:
+      - SPRING_APPLICATION_NAME=eduvid-eureka
+      - SERVER_PORT=8761
+      - SERVER_ADDRESS=0.0.0.0
+      - EUREKA_INSTANCE_HOSTNAME=eureka
+      - EUREKA_CLIENT_REGISTER_WITH_EUREKA=false
+      - EUREKA_CLIENT_FETCH_REGISTRY=false
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka:8761/eureka/
+    networks:
+      - eduvid-net
+    restart: always
 
 
-  # eureka:
-  #   build: ./EDUVID-backend/eduvid-eureka
-  #   container_name: eureka
-  #   ports:
-  #     - "8761:8761"
-  #   networks:
-  #     - eduvid-net
+  user-service:
+    build: ./EDUVID-backend/user-service
+    container_name: user-service
+    ports:
+      - "8092:8092"
+    env_file:
+      - ./EDUVID-backend/user-service/.env
+    environment:
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka:8761/eureka/
+      - EUREKA_HOST=eureka
+      - EUREKA_PORT=8761
+      - APP_NAME=USER-SERVICE
+    depends_on:
+      eureka:
+          condition: service_healthy
+    networks:
+      - eduvid-net
+    restart: always
 
-  # frontend:
-  #   build: ./EDUVID-frontend
-  #   container_name: eduvid-frontend
-  #   ports:
-  #     - "3000:80"
-  #   depends_on:
-  #     - gateway
-  #   networks:
-  #     - eduvid-net
+  certificates-service:
+    build: ./EDUVID-backend/certificates
+    container_name: certificates-service
+    ports:
+      - "8085:8085"
+    env_file:
+      - ./EDUVID-backend/certificates/.env
+    environment:
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka:8761/eureka/
+      - EUREKA_HOST=eureka
+      - EUREKA_PORT=8761
+      - APP_NAME=CERTIFICATES-SERVICE
+    depends_on:
+      eureka:
+          condition: service_healthy
+    networks:
+      - eduvid-net
+    restart: always
+
+  content-service:
+    build: ./EDUVID-backend/content
+    container_name: content-service
+    ports:
+      - "5003:5003"
+    env_file:
+      - ./EDUVID-backend/content/.env
+    environment:
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka:8761/eureka/
+      - EUREKA_HOST=eureka
+      - EUREKA_PORT=8761
+      - APP_NAME=CONTENT-SERVICE
+    depends_on:
+      eureka:
+          condition: service_healthy
+    networks:
+      - eduvid-net
+    restart: always
+
+  courses-service:
+    build: ./EDUVID-backend/courses
+    container_name: courses-service
+    ports:
+      - "8095:8095"
+    env_file:
+      - ./EDUVID-backend/courses/.env
+    environment:
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka:8761/eureka/
+      - EUREKA_HOST=eureka
+      - EUREKA_PORT=8761
+      - APP_NAME=COURSES-SERVICE
+    depends_on:
+      eureka:
+          condition: service_healthy
+    networks:
+      - eduvid-net
+    restart: always
+
+  enrollments-service:
+    build: ./EDUVID-backend/enrollments
+    container_name: enrollments-service
+    ports:
+      - "8088:8088"
+    env_file:
+      - ./EDUVID-backend/enrollments/.env
+    environment:
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka:8761/eureka/
+      - EUREKA_HOST=eureka
+      - EUREKA_PORT=8761
+      - APP_NAME=ENROLLMENT-SERVICE
+    depends_on:
+      eureka:
+          condition: service_healthy
+    networks:
+      - eduvid-net
+    restart: always
+
+  progress-service:
+    build: ./EDUVID-backend/progress
+    container_name: progress-service
+    ports:
+      - "8097:8097"
+    env_file:
+      - ./EDUVID-backend/progress/.env
+    environment:
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka:8761/eureka/
+      - EUREKA_HOST=eureka
+      - EUREKA_PORT=8761
+      - APP_NAME=PROGRESS-SERVICE
+    depends_on:
+      eureka:
+          condition: service_healthy
+    networks:
+      - eduvid-net
+    restart: always
+
+  gateway:
+    build: ./EDUVID-backend/gateway
+    container_name: gateway
+    ports:
+      - "8080:8080"
+    env_file:
+      - ./EDUVID-backend/gateway/.env
+    environment:
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka:8761/eureka/
+      - EUREKA_HOST=eureka
+      - EUREKA_PORT=8761
+      - APP_NAME=GATEWAY
+    depends_on:
+      eureka:
+          condition: service_healthy
+    networks:
+      - eduvid-net
+    restart: always
 
 networks:
   eduvid-net:
