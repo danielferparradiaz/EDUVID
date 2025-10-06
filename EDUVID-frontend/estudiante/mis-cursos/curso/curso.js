@@ -13,7 +13,7 @@ let selectedLessons = []; // guardamos el estado de las lecciones seleccionadas
 async function loadCourse() {
   try {
     // 1. Datos del curso
-    const res = await fetch(`http://auth.eduvid.lan:8080/courses/api/info-curso/${courseId}`);
+    const res = await fetch(`http://api.eduvid.lan:8080/courses/api/info-curso/${courseId}`);
     const course = await res.json();
 
     courseInfo.innerHTML = `
@@ -26,11 +26,11 @@ async function loadCourse() {
     `;
 
     // 2. Lecciones
-    const lessonRes = await fetch(`http://auth.eduvid.lan:8080/content/lessons?courseId=${courseId}`);
+    const lessonRes = await fetch(`http://api.eduvid.lan:8080/content/lessons?courseId=${courseId}`);
     const lessons = await lessonRes.json();
 
     // 3. Progreso actual
-    const progRes = await fetch(`http://auth.eduvid.lan:8080/progress/api/${studentId}/${courseId}`);
+    const progRes = await fetch(`http://api.eduvid.lan:8080/progress/api/${studentId}/${courseId}`);
     const progress = await progRes.json();
     const completedLessons = progress?.completedLessons || [];
 
@@ -79,7 +79,7 @@ certButton.addEventListener("click", async () => {
     console.log("📩 Enviando progreso al backend...");
 
     for (const lessonId of selectedLessons) {
-      const resp = await fetch("http://auth.eduvid.lan:8080/progress/api/complete-lesson", {
+      const resp = await fetch("http://api.eduvid.lan:8080/progress/api/complete-lesson", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ 
