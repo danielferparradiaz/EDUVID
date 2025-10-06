@@ -14,7 +14,7 @@ RUN npm install --omit=dev
 COPY . .
 
 # Exponer el puerto (lo tomará del .env, pero aquí va fijo para Docker)
-EXPOSE 8092
+EXPOSE 8095
 
 # Comando de inicio
 CMD ["npm", "start"]

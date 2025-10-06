@@ -11,11 +11,11 @@ app.use(express.json());
 // ✅ Configuración de CORS
 app.use(cors({
   origin: [
-    "http://127.0.0.1:5500", // tu frontend corriendo con Live Server
-    "http://localhost:5500"  // por si cambia a localhost
+    "http://front.eduvid.lan",
+    "http://127.0.0.1:5500"
   ],
   methods: ["GET", "POST", "PUT", "DELETE"],
-  allowedHeaders: ["Content-Type", "Authorization"]
+  allowedHeaders: ["Content-Type", "Authorization"],
 }));
 
 // Rutas

@@ -1,20 +1,20 @@
-# Imagen base (ligera con Node.js 18 LTS)
+# Imagen base de Node
 FROM node:18-alpine
 
-# Carpeta de trabajo dentro del contenedor
+# Crear directorio de trabajo
 WORKDIR /app
 
-# Copiamos package.json y package-lock.json primero (aprovecha cache de Docker)
+# Copiar package.json y package-lock.json
 COPY package*.json ./
 
-# Instalamos dependencias (usa ci si tienes lockfile)
-RUN npm install --production
+# Instalar dependencias (solo producción si quieres más liviano)
+RUN npm install --omit=dev
 
-# Copiamos el resto del código al contenedor
+# Copiar el resto del código
 COPY . .
 
-# Expone el puerto en el que corre tu microservicio
+# Exponer el puerto (lo tomará del .env, pero aquí va fijo para Docker)
 EXPOSE 8088
 
-# Comando para ejecutar tu aplicación
+# Comando de inicio
 CMD ["npm", "start"]

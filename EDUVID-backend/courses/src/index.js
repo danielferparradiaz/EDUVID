@@ -13,7 +13,10 @@ const app = express();
 // Middleware para parsear JSON
 app.use(morgan("dev"));
 app.use(cors({
-  origin: "http://127.0.0.1:5500",
+  origin: [
+    "http://front.eduvid.lan",
+    "http://127.0.0.1:5500"
+  ],
   methods: ["GET", "POST", "PUT", "DELETE"],
   allowedHeaders: ["Content-Type", "Authorization"],
 }));
