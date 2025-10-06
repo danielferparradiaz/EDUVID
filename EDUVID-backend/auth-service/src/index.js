@@ -13,7 +13,8 @@ const app = express();
 app.use(morgan("dev"));
 app.use(cors({
   origin: [
-    "http://eduvid.local",  // el frontend servido desde tu DNS
+    "http://front.eduvid.lan",
+    "http://127.0.0.1:5500"
   ],
   methods: ["GET", "POST", "PUT", "DELETE"],
   allowedHeaders: ["Content-Type", "Authorization"],

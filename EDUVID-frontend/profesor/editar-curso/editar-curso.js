@@ -40,7 +40,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   // 📥 Precargar curso
   try {
-    const res = await fetch(`http://localhost:8095/api/info-curso/${cursoId}`, {
+    const res = await fetch(`http://api.eduvid.lan:8080/courses/api/info-curso/${cursoId}`, {
       headers: { "Authorization": `Bearer ${token}` }
     });
 
@@ -63,7 +63,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   async function cargarLecciones(cursoId, token) {
     try {
-      const res = await fetch(`http://localhost:5003/lessons?courseId=${cursoId}`, {
+      const res = await fetch(`http://api.eduvid.lan:8080/content/lessons?courseId=${cursoId}`, {
         headers: { "Authorization": `Bearer ${token}` }
       });
 
@@ -90,7 +90,7 @@ document.addEventListener("DOMContentLoaded", async () => {
  window.eliminarLeccion = async function(lessonId) {
   if (!confirm("¿Eliminar esta lección?")) return;
 
-  const res = await fetch(`http://localhost:5003/lessons/${lessonId}`, {
+  const res = await fetch(`http://api.eduvid.lan:8080/content/lessons/${lessonId}`, {
     method: "DELETE",
     headers: { "Authorization": `Bearer ${token}` }
   });
@@ -110,7 +110,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     const videoUrl = document.getElementById("videoUrl").value.trim();
     const category = document.getElementById("category").value.trim();
 
-    const res = await fetch(`http://localhost:8095/api/actualizar-curso/${cursoId}`, {
+    const res = await fetch(`http://api.eduvid.lan:8080/courses/api/actualizar-curso/${cursoId}`, {
       method: "PUT",
       headers: { "Content-Type": "application/json", "Authorization": `Bearer ${token}` },
       body: JSON.stringify({ nombre, descripcion, videoUrl, category })
@@ -124,7 +124,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   btnEliminarCurso.addEventListener("click", async () => {
     if (!confirm("¿Eliminar curso?")) return;
 
-    const res = await fetch(`http://localhost:8095/api/eliminar-curso/${cursoId}`, {
+    const res = await fetch(`http://api.eduvid.lan:8080/api/eliminar-curso/${cursoId}`, {
       method: "DELETE",
       headers: { "Authorization": `Bearer ${token}` }
     });
@@ -139,7 +139,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     const title = document.getElementById("lesson-title").value.trim();
     if (!title) return alert("⚠️ Escribe un título para la lección");
 
-    const res = await fetch(`http://localhost:5003/lessons`, {
+    const res = await fetch(`http://api.eduvid.lan:8080/content/lessons`, {
       method: "POST",
       headers: { "Content-Type": "application/json", "Authorization": `Bearer ${token}` },
       body: JSON.stringify({ courseId: cursoId, title })
@@ -212,7 +212,7 @@ window.guardarEdicion = async function(id) {
   try {
     const nuevoTitulo = document.getElementById(`edit-input-${id}`).value;
 
-    const res = await fetch(`http://localhost:5003/lessons/${id}`, {
+    const res = await fetch(`http://api.eduvid.lan:8080/content/lessons/${id}`, {
       method: "PUT",
       headers: { 
         "Content-Type": "application/json",

@@ -101,7 +101,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         console.log(payload);
 
-        const res = await fetch("http://localhost:9000/auth/login", {
+        const res = await fetch("http://auth.eduvid.lan:9000/auth/login", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(payload),
@@ -122,11 +122,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
           // Redirección según rol
           if (decodedPayload.rol === "profesor") {
-            window.location.href = "../../EDUVID-frontend/profesor/profesor.html";
+            window.location.href = "../EDUVID-frontend/profesor/profesor.html";
           } else if (decodedPayload.rol === "estudiante") {
-            window.location.href = "../../EDUVID-frontend/estudiante/estudiante.html";
+            window.location.href = "../EDUVID-frontend/estudiante/estudiante.html";
           } else {
-            window.location.href = "../../EDUVID-frontend/dashboard-admin/dashboard.html";
+            window.location.href = "../EDUVID-frontend/dashboard-admin/dashboard.html";
           }
 
         } else {
@@ -142,7 +142,7 @@ document.addEventListener("DOMContentLoaded", () => {
         payload.rol = rol;
         payload.password = password;
 
-        const res = await fetch("http://localhost:9000/auth/register", {
+        const res = await fetch("http://auth.eduvid.lan:9000/auth/register", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(payload),
@@ -158,7 +158,7 @@ document.addEventListener("DOMContentLoaded", () => {
       }
 
       if (mode === "forgot") {
-        const res = await fetch("http://localhost:9000/auth/forgot", {
+        const res = await fetch("http://auth.eduvid.lan:9000/auth/forgot", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(payload),
