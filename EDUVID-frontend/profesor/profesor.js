@@ -183,7 +183,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       data.instructorId = getTeacherIdFromJWT();
 
       try {
-        const res = await fetch("http://localhost:8095/api/crear-curso", {
+        const res = await fetch("http://api.eduvid.lan:8080/courses/api/crear-curso", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -220,7 +220,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     const teacherId = getTeacherIdFromJWT();
     if (!teacherId) throw new Error("No se pudo obtener el ID del profesor desde el token.");
 
-    const res = await fetch(`http://localhost:8095/api/listarByTeacherId/${teacherId}`, {
+    const res = await fetch(`http://api.eduvid.lan:8080/courses/api/listarByTeacherId/${teacherId}`, {
       headers: { "Authorization": `Bearer ${localStorage.getItem("jwt")}` }
     });
 

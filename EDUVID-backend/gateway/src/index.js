@@ -1,21 +1,22 @@
 import express from "express";
 import { Eureka } from "eureka-js-client";
 import { createProxyMiddleware } from "http-proxy-middleware";
-import morgan from "morgan";
 import cors from "cors";
 
 const app = express();
 const PORT = process.env.PORT || 8080;
 
-
-app.use(morgan("dev"));
+// 🔧 Middleware base
 app.use(cors({
-  origin: ["http://127.0.0.1:5500", "http://localhost:5500"],
+  origin: [
+    "http://front.eduvid.lan",
+    "http://127.0.0.1:5500"
+  ],
   methods: ["GET", "POST", "PUT", "DELETE"],
   allowedHeaders: ["Content-Type", "Authorization"],
 }));
 
-// 👉 Configuración Eureka Client
+// ⚙️ Configuración Eureka Client
 const eureka = new Eureka({
   instance: {
     app: "gateway",
@@ -36,7 +37,7 @@ const eureka = new Eureka({
   },
 });
 
-// Conectar a Eureka
+// 🔌 Conexión a Eureka
 eureka.start((err) => {
   if (err) {
     console.error("❌ Error registrando gateway en Eureka:", err);
@@ -45,7 +46,7 @@ eureka.start((err) => {
   }
 });
 
-// Función para obtener instancia de servicio desde Eureka
+// 🧭 Obtener la URL de un servicio desde Eureka
 function getServiceUrl(serviceName) {
   const instances = eureka.getInstancesByAppId(serviceName.toUpperCase());
   if (instances.length === 0) return null;
@@ -53,44 +54,33 @@ function getServiceUrl(serviceName) {
   return `http://${instance.hostName}:${instance.port.$}`;
 }
 
+// 🚏 Helper para crear proxys fácilmente
+function proxyTo(path, serviceName) {
+  app.use(path, (req, res, next) => {
+    const target = getServiceUrl(serviceName);
+    if (!target) {
+      console.error(`❌ ${serviceName} not available`);
+      return res.status(500).send(`${serviceName} not available`);
+    }
 
-app.use("/users", (req, res, next) => {
-  const target = getServiceUrl("USER-SERVICE");
-  if (!target) return res.status(500).send("User Service not available");
-  return createProxyMiddleware({ target, changeOrigin: true })(req, res, next);
-});
+    console.log(`➡️ Proxy ${req.method} ${req.originalUrl} → ${target}`);
+    return createProxyMiddleware({
+      target,
+      changeOrigin: true,
+      pathRewrite: { [`^${path}`]: "" }, // 🔥 elimina el prefijo del path
+    })(req, res, next);
+  });
+}
 
-app.use("/courses", (req, res, next) => {
-  const target = getServiceUrl("COURSES-SERVICE");
-  if (!target) return res.status(500).send("Courses Service not available");
-  return createProxyMiddleware({ target, changeOrigin: true })(req, res, next);
-});
+// 🧩 Registrar todos los servicios
+proxyTo("/users", "USER-SERVICE");
+proxyTo("/courses", "COURSES-SERVICE");
+proxyTo("/progress", "PROGRESS-SERVICE");
+proxyTo("/enrollment", "ENROLLMENT-SERVICE");
+proxyTo("/content", "CONTENT-SERVICE");
+proxyTo("/certificates", "CERTIFICATES-SERVICE");
 
-app.use("/progress", (req, res, next) => {
-  const target = getServiceUrl("PROGRESS-SERVICE");
-  if (!target) return res.status(500).send("Progress Service not available");
-  return createProxyMiddleware({ target, changeOrigin: true })(req, res, next);
-});
-
-app.use("/enrollment", (req, res, next) => {
-  const target = getServiceUrl("ENROLLMENT-SERVICE");
-  if (!target) return res.status(500).send("Enrollments Service not available");
-  return createProxyMiddleware({ target, changeOrigin: true })(req, res, next);
-});
-
-app.use("/content", (req, res, next) => {
-  const target = getServiceUrl("CONTENT-SERVICE");
-  if (!target) return res.status(500).send("Content Service not available");
-  return createProxyMiddleware({ target, changeOrigin: true })(req, res, next);
-});
-
-app.use("/certificates", (req, res, next) => {
-  const target = getServiceUrl("CERTIFICATES-SERVICE");
-  if (!target) return res.status(500).send("Certificates Service not available");
-  return createProxyMiddleware({ target, changeOrigin: true })(req, res, next);
-});
-
-// Start server
+// 🚀 Iniciar Gateway
 app.listen(PORT, () => {
   console.log(`🚀 Gateway corriendo en http://localhost:${PORT}`);
 });

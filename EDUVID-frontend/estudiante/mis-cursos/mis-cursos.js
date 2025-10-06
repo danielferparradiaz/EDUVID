@@ -22,7 +22,7 @@ async function loadCourses() {
 
     // 🔎 1. Obtener inscripciones del estudiante
     console.log("➡️ Fetch enrollments...");
-    const enrollRes = await fetch(`http://localhost:8088/api/by-student/${studentId}`);
+    const enrollRes = await fetch(`http://auth.eduvid.lan:8080/users/api/by-student/${studentId}`);
     console.log("✅ Response enrollments status:", enrollRes.status);
 
     const enrollments = await enrollRes.json();
@@ -42,7 +42,7 @@ async function loadCourses() {
 
       // 🔎 2. Obtener detalles del curso
       console.log(`➡️ Fetch curso ID ${enr.courseId}...`);
-      const courseRes = await fetch(`http://localhost:8095/api/info-curso/${enr.courseId}`);
+      const courseRes = await fetch(`http://auth.eduvid.lan:8080/courses/api/info-curso/${enr.courseId}`);
       console.log("✅ Response curso status:", courseRes.status);
 
       const course = await courseRes.json();
@@ -50,7 +50,7 @@ async function loadCourses() {
 
       // 🔎 3. Obtener progreso del estudiante en el curso
       console.log(`➡️ Fetch progreso estudiante=${studentId}, curso=${enr.courseId}...`);
-      const progRes = await fetch(`http://localhost:8097/api/${studentId}/${enr.courseId}`);
+      const progRes = await fetch(`http://auth.eduvid.lan:8080/progress/api/${studentId}/${enr.courseId}`);
       console.log("✅ Response progreso status:", progRes.status);
 
       const progress = await progRes.json();

@@ -9,7 +9,7 @@
         const decoded = JSON.parse(atob(token.split(".")[1])); // decodificar payload
         const teacherId = decoded.id; // id del profesor desde el JWT
 
-        const res = await fetch(`http://localhost:8092/api/students-by-teacher/${teacherId}`, {
+        const res = await fetch(`http://api.eduvid.lan:8080/users/api/students-by-teacher/${teacherId}`, {
           headers: {
             // "Authorization": `Bearer ${token}`,
             "Content-Type": "application/json"

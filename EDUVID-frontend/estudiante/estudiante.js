@@ -23,7 +23,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
       spinner.classList.remove("d-none");
 
-      const res = await fetch("http://localhost:8095/api/recomendacion");
+      const res = await fetch("http://auth.eduvid.lan:8080/courses/api/recomendacion");
       if (!res.ok) throw new Error("Error obteniendo recomendación");
 
       const course = await res.json();
@@ -114,7 +114,7 @@ enrollBtn.addEventListener("click", async () => {
     const instructorId = document.getElementById("course-instructor").textContent.replace("ID ", "");
 
     // Petición al backend
-    const res = await fetch("http://localhost:8088/api/enrollUser", {
+    const res = await fetch("http://auth.eduvid.lan:8080/enrollment/api/enrollUser", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
