@@ -122,11 +122,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
           // Redirección según rol
           if (decodedPayload.rol === "profesor") {
-            window.location.href = "../EDUVID-frontend/profesor/profesor.html";
+            window.location.href = "profesor/profesor.html";
           } else if (decodedPayload.rol === "estudiante") {
-            window.location.href = "../EDUVID-frontend/estudiante/estudiante.html";
+            window.location.href = "estudiante/estudiante.html";
           } else {
-            window.location.href = "../EDUVID-frontend/dashboard-admin/dashboard.html";
+            window.location.href = "dashboard-admin/dashboard.html";
           }
 
         } else {
